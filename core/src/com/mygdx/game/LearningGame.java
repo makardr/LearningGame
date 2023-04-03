@@ -1,31 +1,58 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.ScreenUtils;
 
-public class LearningGame extends ApplicationAdapter {
-	SpriteBatch batch;
-	Texture img;
-	
-	@Override
-	public void create () {
-		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
-	}
+import com.badlogic.gdx.Game;
+import com.mygdx.game.views.AddWordsScreen;
+import com.mygdx.game.views.EndScreen;
+import com.mygdx.game.views.GameScreen;
+import com.mygdx.game.views.LoadingScreen;
+import com.mygdx.game.views.MenuScreen;
+import com.mygdx.game.views.PreferencesScreen;
 
-	@Override
-	public void render () {
-		ScreenUtils.clear(1, 0, 0, 1);
-		batch.begin();
-		batch.draw(img, 0, 0);
-		batch.end();
-	}
-	
-	@Override
-	public void dispose () {
-		batch.dispose();
-		img.dispose();
-	}
+public class LearningGame extends Game {
+
+    private LoadingScreen loadingScreen;
+    private MenuScreen menuScreen;
+    private PreferencesScreen preferencesScreen;
+
+    private GameScreen gameScreen;
+    private EndScreen endScreen;
+    private AddWordsScreen addWordsScreen;
+    public final static int MENU = 0;
+    public final static int PREFERENCES = 1;
+    public final static int GAMESCREEN = 2;
+    public final static int ENDGAME = 3;
+
+    @Override
+    public void create() {
+//        setScreen(loadingScreen);
+        changeScreen(GAMESCREEN);
+    }
+
+
+    public void changeScreen(int screen) {
+        switch (screen) {
+            case MENU:
+                if (menuScreen == null) menuScreen = new MenuScreen(this);
+                this.setScreen(menuScreen);
+                break;
+            case PREFERENCES:
+                if (preferencesScreen == null) preferencesScreen = new PreferencesScreen(this);
+                this.setScreen(preferencesScreen);
+                break;
+            case GAMESCREEN:
+                if (gameScreen == null) gameScreen = new GameScreen(this);
+                this.setScreen(gameScreen);
+                break;
+            case ENDGAME:
+                if (endScreen == null) endScreen = new EndScreen(this);
+                this.setScreen(endScreen);
+                break;
+        }
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+    }
 }

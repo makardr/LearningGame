@@ -1,4 +1,47 @@
 package com.mygdx.game.views;
 
-public class AddWordsScreen {
+import com.badlogic.gdx.Screen;
+import com.mygdx.game.LearningGame;
+
+public class AddWordsScreen implements Screen {
+    private final LearningGame main;
+
+    public AddWordsScreen(LearningGame main) {
+        this.main=main;
+    }
+
+    @Override
+    public void show() {
+
+    }
+
+    @Override
+    public void render(float delta) {
+
+    }
+
+    @Override
+    public void resize(int width, int height) {
+
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
+    @Override
+    public void hide() {
+
+    }
+
+    @Override
+    public void dispose() {
+
+    }
 }
