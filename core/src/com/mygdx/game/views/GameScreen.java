@@ -6,12 +6,14 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.LearningGame;
 import com.mygdx.game.hud.Hud;
+import com.mygdx.game.model.B2dModel;
 import com.mygdx.game.util.KeyboardController;
 
 public class GameScreen implements Screen {
@@ -20,6 +22,9 @@ public class GameScreen implements Screen {
     private final OrthographicCamera camera;
     private final SpriteBatch batch;
     private final Texture img;
+    private final B2dModel model;
+    private final Box2DDebugRenderer renderer;
+    private final Box2DDebugRenderer debugRenderer;
     private Hud hud;
     private Viewport viewport;
     private final KeyboardController controller;
@@ -33,6 +38,9 @@ public class GameScreen implements Screen {
         batch = new SpriteBatch();
         img = main.b2dAssetManager.manager.get("badlogic.jpg");
         hud = new Hud(batch);
+        model = new B2dModel(camera,controller);
+        debugRenderer = new Box2DDebugRenderer(true, true, true, true, true, true);
+        renderer = new Box2DDebugRenderer(false, false, false, false, false, false);
     }
 
     @Override
@@ -44,6 +52,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        model.logicStep(delta);
         //Clear the screen (1)
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -51,8 +60,7 @@ public class GameScreen implements Screen {
         //Set ProjectionMatrix of SpriteBatch (2)
         batch.setProjectionMatrix(camera.combined);
 
-//        Camera test
-
+//        Camera test control
         if (controller.left) {
             Gdx.app.log("Camera", "Left");
             camera.position.set(camera.position.x - 1f, camera.position.y, 0);
@@ -67,15 +75,22 @@ public class GameScreen implements Screen {
             camera.position.set(camera.position.x, camera.position.y - 1f, 0);
         }
         camera.update();
-
-        batch.begin();
-        //Draw image on position 0, 0 with width 25 and height 25 (3)
-        batch.draw(img, 0, 0, 200, 200);
-        batch.draw(img, 200, 200, 500, 500);
-        batch.end();
-
-        batch.setProjectionMatrix(hud.stage.getCamera().combined);
+        drawBatch();
+        debugRenderer.render(model.world, camera.combined);
         hud.stage.draw();
+    }
+
+    private void drawBatch() {
+        batch.begin();
+
+        //Draw images
+//        batch.draw(img, 0, 0, 200, 200);
+//        batch.draw(img, 200, 200, 500, 500);
+        batch.draw(img, model.player.getPosition().x-model.player.getPosition().x/2,model.player.getPosition().y-model.player.getPosition().y/2,100,100);
+
+
+        batch.end();
+        batch.setProjectionMatrix(hud.stage.getCamera().combined);
     }
 
     @Override
