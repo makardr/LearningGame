@@ -10,6 +10,7 @@ public class DesktopLauncher {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setForegroundFPS(60);
 		config.setTitle("Learning Estonian Language Game");
+		config.setWindowedMode(1080/2,1800/2);
 		new Lwjgl3Application(new LearningGame(), config);
 	}
 }
