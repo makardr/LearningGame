@@ -61,6 +61,10 @@ public class LearningGame extends Game {
         }
     }
 
+    private void restartGame(){
+
+    }
+
     @Override
     public void dispose() {
         super.dispose();

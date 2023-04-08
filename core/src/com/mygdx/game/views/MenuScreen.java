@@ -7,7 +7,7 @@ public class MenuScreen implements Screen {
     private final LearningGame main;
 
     public MenuScreen(LearningGame main) {
-        this.main=main;
+        this.main = main;
     }
 
     @Override

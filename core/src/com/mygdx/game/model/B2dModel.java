@@ -22,7 +22,6 @@ public class B2dModel {
     private final OrthographicCamera cam;
 
 
-
     private KeyboardController controller;
     private GameScreen screen;
     private Array<Player> players;
@@ -40,14 +39,14 @@ public class B2dModel {
         this.controller = controller;
         world = new World(new Vector2(0, 0f), true);
         world.setContactListener(new B2dContactListener(this));
-        batch=screen.getBatch();
-        players=new Array<Player>();
+        batch = screen.getBatch();
+        players = new Array<Player>();
         createBodies();
     }
 
     public void logicStep(final float delta) {
-        if (controller.isMouse1Down && pointIntersectsBody(player.body, controller.mouseLocation)) {
-            player.destroy();
+        if (controller.isMouse1Down && pointIntersectsBody(testWord.body, controller.mouseLocation)) {
+            testWord.destroy();
         }
         world.step(delta, 3, 3);
         testWord.update(delta);
@@ -66,7 +65,7 @@ public class B2dModel {
                 return true;
             }
             return false;
-        } catch (IllegalStateException e){
+        } catch (IllegalStateException e) {
             return false;
         }
 
@@ -74,10 +73,10 @@ public class B2dModel {
 
     public void createBodies() {
         B2dBodyFactory bodyFactory = B2dBodyFactory.getInstance(world);
-        player=new Player(screen,world,bodyFactory.makeCirclePolyBody(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2,100,B2dBodyFactory.STEEL, BodyDef.BodyType.StaticBody,false));
+        player = new Player(bodyFactory.makeCirclePolyBody(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 100, B2dBodyFactory.STEEL, BodyDef.BodyType.StaticBody, false),new Vector2(0,0));
         bodyFactory.makeAllFixturesSensors(player.body);
         players.add(player);
-        testWord=new Word(screen,world,bodyFactory.makeCirclePolyBody(Gdx.graphics.getWidth()/2-150, Gdx.graphics.getHeight()/2,100,B2dBodyFactory.STEEL,false,BodyDef.BodyType.DynamicBody));
+        testWord = new Word(bodyFactory.makeCirclePolyBody(Gdx.graphics.getWidth() / 2 - 150, Gdx.graphics.getHeight() / 2, 100, B2dBodyFactory.STEEL, false, BodyDef.BodyType.DynamicBody),new Vector2(25,0));
 //        bodyFactory.makeCirclePolyBody(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2+100,100,B2dBodyFactory.STEEL,false, BodyDef.BodyType.DynamicBody);
 
     }

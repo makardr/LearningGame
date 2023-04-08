@@ -7,7 +7,7 @@ public class AddWordsScreen implements Screen {
     private final LearningGame main;
 
     public AddWordsScreen(LearningGame main) {
-        this.main=main;
+        this.main = main;
     }
 
     @Override

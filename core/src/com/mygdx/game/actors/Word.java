@@ -12,12 +12,10 @@ public class Word extends B2dBodyEntity {
     private final String TAG = "Word";
 
 
-    public Word(GameScreen screen, World world, Body body) {
-        super(screen, world, body);
+    public Word(Body body, Vector2 velocity) {
+        super(body, velocity);
         body.setUserData("WORDBODY");
         setToDestroy = false;
-
-
     }
 
     @Override
@@ -27,7 +25,7 @@ public class Word extends B2dBodyEntity {
             Gdx.app.log(TAG, "setToDestroy");
             setToDestroy = false;
         } else {
-            body.setLinearVelocity(25, 0);
+            body.setLinearVelocity(velocity);
         }
     }
 

@@ -6,8 +6,9 @@ import com.mygdx.game.LearningGame;
 public class PreferencesScreen implements Screen {
 
     private LearningGame main;
+
     public PreferencesScreen(LearningGame main) {
-        this.main=main;
+        this.main = main;
     }
 
     @Override

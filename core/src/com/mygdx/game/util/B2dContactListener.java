@@ -19,17 +19,19 @@ public class B2dContactListener implements ContactListener {
 
     @Override
     public void beginContact(Contact contact) {
-        Gdx.app.log(TAG,"Begin contact");
+        Gdx.app.log(TAG, "Begin contact");
         Fixture fa = contact.getFixtureA();
         Fixture fb = contact.getFixtureB();
 
         if (fa.getBody().getUserData() == "PLAYERBODY") {
-            Gdx.app.log("B2dContactListener","Contact1");
+            Gdx.app.log("B2dContactListener", "Contact1");
             parent.testWord.destroy();
+            parent.player.damage();
             return;
         } else if (fb.getBody().getUserData() == "PLAYERBODY") {
-            Gdx.app.log("B2dContactListener","Contact2");
+            Gdx.app.log("B2dContactListener", "Contact2");
             parent.testWord.destroy();
+            parent.player.damage();
             return;
         }
 

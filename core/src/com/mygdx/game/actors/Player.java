@@ -13,51 +13,42 @@ public class Player extends B2dBodyEntity {
     private boolean setToDestroy;
     private boolean destroyed;
 
-    public void damage() {
-        lives -= 1;
-    }
-
-    //    public Player(GameScreen screen, float x, float y,Body body) {
-//        super(screen, x, y);
-//        this.body = body;
-//        lives = 3;
-//    }
-    public Player(GameScreen screen,World world, Body body) {
-        super(screen,world, body);
+    public Player(Body body, Vector2 velocity) {
+        super(body, velocity);
         body.setUserData("PLAYERBODY");
         lives = 3;
     }
+
 
     @Override
     public void update(float dt) {
         if (setToDestroy && !destroyed) {
             destroyed = true;
-            world.destroyBody(body);
+//            world.destroyBody(body);
 //            setRegion(new TextureRegion(screen.getAtlas().findRegion("goomba"), 32, 0, 16, 16));
         } else if (!destroyed) {
 //            b2body.setLinearVelocity(velocity);
 ////        -getWidth()/2 to offset sprite by half the width of the sprite, same with height
 //            setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
         }
-        if(lives<=0){
-            Gdx.app.log("Player", "Lives ran out "+lives);
-        }
+    }
+
+    public void damage() {
+        lives -= 1;
+    }
+
+
+    public void destroy() {
+//        Switch screen into the game over screen in the future
+
+//        Gdx.app.log("Player", "Player destroyed" + setToDestroy);
+//        setToDestroy = true;
+//        body.setTransform(new Vector2(-100, 100), body.getAngle());
+//        damage();
     }
 
     @Override
     protected void defineEntity() {
 
-    }
-
-//    @Override
-//    protected void defineEntity() {
-//
-//    }
-
-    public void destroy() {
-        Gdx.app.log("Player", "Player destroyed"+setToDestroy);
-//        setToDestroy = true;
-        body.setTransform(new Vector2(-100,100), body.getAngle());
-//        damage();
     }
 }

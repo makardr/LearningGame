@@ -15,8 +15,8 @@ public class LoadingScreen implements Screen {
     private TextureAtlas atlas;
 
     public LoadingScreen(LearningGame main) {
-        this.main=main;
-        spriteBatch=new SpriteBatch();
+        this.main = main;
+        spriteBatch = new SpriteBatch();
         loadAssets();
     }
 
@@ -32,7 +32,7 @@ public class LoadingScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         spriteBatch.begin();
-        spriteBatch.draw(loading_circle_grey,Gdx.graphics.getWidth()/2-25,Gdx.graphics.getHeight()/2-25,50,50);
+        spriteBatch.draw(loading_circle_grey, Gdx.graphics.getWidth() / 2 - 25, Gdx.graphics.getHeight() / 2 - 25, 50, 50);
         spriteBatch.end();
 
         main.changeScreen(LearningGame.GAMESCREEN);
@@ -64,14 +64,16 @@ public class LoadingScreen implements Screen {
         spriteBatch.dispose();
         atlas.dispose();
     }
-    private void loadAssets(){
+
+    private void loadAssets() {
+//        Load loading
         main.b2dAssetManager.queueAddLoadingImages();
         main.b2dAssetManager.manager.finishLoading();
-
         atlas = main.b2dAssetManager.manager.get("images/loading.atlas");
         loading_circle_grey = atlas.findRegion("loading_circle_grey");
-
+//        Load game
         main.b2dAssetManager.queueAddImages();
+        main.b2dAssetManager.queueAddFonts();
         main.b2dAssetManager.manager.finishLoading();
     }
 }

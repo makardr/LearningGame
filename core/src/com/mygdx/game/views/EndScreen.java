@@ -7,7 +7,7 @@ public class EndScreen implements Screen {
     private final LearningGame main;
 
     public EndScreen(LearningGame main) {
-        this.main=main;
+        this.main = main;
     }
 
     @Override

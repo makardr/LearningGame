@@ -17,25 +17,30 @@ import com.mygdx.game.LearningGame;
 public class Hud implements Disposable {
     public Stage stage;
     private Viewport viewport;
-//    Widgets
+    //    Widgets
     private Label errorsLabel;
+
+    private String value;
+
     public Hud(SpriteBatch spriteBatch) {
         viewport = new ScreenViewport(new OrthographicCamera());
         stage = new Stage(viewport, spriteBatch);
         Table table = new Table();
         table.top();
         table.setFillParent(true);
-        errorsLabel= new Label("Test hud", new com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        errorsLabel = new Label(value, new com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle(new BitmapFont(), Color.WHITE));
         table.add(errorsLabel).expandX().padTop(10);
         stage.addActor(table);
     }
 
-    public void updateHud(){
-
+    public void updateHud(String newValue) {
+        errorsLabel.setText(newValue);
     }
-    public void resize(int width, int height){
+
+    public void resize(int width, int height) {
         viewport.update(width, height);
     }
+
     @Override
     public void dispose() {
         stage.dispose();

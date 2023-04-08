@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
@@ -26,9 +27,13 @@ public class GameScreen implements Screen {
     private final B2dModel model;
     private final Box2DDebugRenderer renderer;
     private final Box2DDebugRenderer debugRenderer;
-    private Hud hud;
+    private final BitmapFont font;
+
     private Viewport viewport;
     private final KeyboardController controller;
+
+    //    Public
+    public Hud hud;
 
     public GameScreen(LearningGame main) {
         this.main = main;
@@ -38,8 +43,14 @@ public class GameScreen implements Screen {
         viewport = new ExtendViewport(camera.viewportWidth, camera.viewportHeight, camera);
         model = new B2dModel(this, camera, controller);
         batch = new SpriteBatch();
-        img = main.b2dAssetManager.manager.get("badlogic.jpg");
+
         hud = new Hud(batch);
+
+        img = main.b2dAssetManager.manager.get("badlogic.jpg");
+        font = main.b2dAssetManager.manager.get("font/white_font.fnt");
+//        font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        font.setColor(0.0f, 1.0f, 0.0f, 1.0f);
+        font.getData().setScale(1f, 1f);
 
         debugRenderer = new Box2DDebugRenderer(true, true, true, true, true, true);
         renderer = new Box2DDebugRenderer(false, false, false, false, false, false);
@@ -80,19 +91,17 @@ public class GameScreen implements Screen {
         drawBatch();
         debugRenderer.render(model.world, camera.combined);
         hud.stage.draw();
+        hud.updateHud(String.valueOf(model.player.lives));
     }
 
     private void drawBatch() {
         batch.begin();
 
-        //Draw images
-//        batch.draw(img, 0, 0, 200, 200);
-//        batch.draw(img, 200, 200, 500, 500);
+        int width = 100;
+        int height = 100;
+        batch.draw(img, model.player.body.getPosition().x - height / 2, model.player.body.getPosition().y - width / 2, width, height);
 
-        int width=100;
-        int height=100;
-        batch.draw(img, model.player.body.getPosition().x-width/2, model.player.body.getPosition().y-height/2, width, height);
-
+        font.draw(batch, "ää'õüfüаамьа", model.testWord.body.getPosition().x - 25, model.testWord.body.getPosition().y + 12.5f);
 
         batch.end();
         batch.setProjectionMatrix(hud.stage.getCamera().combined);
@@ -122,11 +131,13 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         batch.dispose();
+        font.dispose();
     }
 
     public World getWorld() {
         return model.world;
     }
+
     public SpriteBatch getBatch() {
         return batch;
     }
