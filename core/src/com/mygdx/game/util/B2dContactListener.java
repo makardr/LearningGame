@@ -24,10 +24,12 @@ public class B2dContactListener implements ContactListener {
         Fixture fb = contact.getFixtureB();
 
         if (fa.getBody().getUserData() == "PLAYERBODY") {
-            Gdx.app.log("B2dContactListener","Contact");
+            Gdx.app.log("B2dContactListener","Contact1");
+            parent.testWord.destroy();
             return;
         } else if (fb.getBody().getUserData() == "PLAYERBODY") {
-            Gdx.app.log("B2dContactListener","Contact");
+            Gdx.app.log("B2dContactListener","Contact2");
+            parent.testWord.destroy();
             return;
         }
 

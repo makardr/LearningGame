@@ -20,10 +20,7 @@ import com.mygdx.game.views.GameScreen;
 
 public class B2dModel {
     private final OrthographicCamera cam;
-    public final World world;
 
-
-    //    Public bodies to draw in GameScreen
 
 
     private KeyboardController controller;
@@ -31,14 +28,17 @@ public class B2dModel {
     private Array<Player> players;
     private SpriteBatch batch;
 
-    private Word testWord;
+
+    //    Public bodies to draw in GameScreen
+    public final World world;
+    public Word testWord;
     public Player player;
 
     public B2dModel(GameScreen screen, OrthographicCamera cam, KeyboardController controller) {
         this.screen = screen;
         this.cam = cam;
         this.controller = controller;
-        world = new World(new Vector2(0, -10f), true);
+        world = new World(new Vector2(0, 0f), true);
         world.setContactListener(new B2dContactListener(this));
         batch=screen.getBatch();
         players=new Array<Player>();
@@ -50,10 +50,11 @@ public class B2dModel {
             player.destroy();
         }
         world.step(delta, 3, 3);
-
+        testWord.update(delta);
         for (B2dBodyEntity entity : players) {
             entity.update(delta);
         }
+
     }
 
 
@@ -76,7 +77,8 @@ public class B2dModel {
         player=new Player(screen,world,bodyFactory.makeCirclePolyBody(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2,100,B2dBodyFactory.STEEL, BodyDef.BodyType.StaticBody,false));
         bodyFactory.makeAllFixturesSensors(player.body);
         players.add(player);
-        testWord=new Word(screen,world,bodyFactory.makeCirclePolyBody(Gdx.graphics.getWidth()/2-150, Gdx.graphics.getHeight()/2,100,B2dBodyFactory.STEEL,false,10f,0f));
+        testWord=new Word(screen,world,bodyFactory.makeCirclePolyBody(Gdx.graphics.getWidth()/2-150, Gdx.graphics.getHeight()/2,100,B2dBodyFactory.STEEL,false,BodyDef.BodyType.DynamicBody));
+//        bodyFactory.makeCirclePolyBody(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2+100,100,B2dBodyFactory.STEEL,false, BodyDef.BodyType.DynamicBody);
 
     }
 }

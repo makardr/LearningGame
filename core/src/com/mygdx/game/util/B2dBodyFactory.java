@@ -102,8 +102,8 @@ public class B2dBodyFactory {
     }
 
     //    Method overloading
-    public Body makeCirclePolyBody(float posx, float posy, float radius, int material, BodyDef.BodyType bodyType) {
-        return makeCirclePolyBody(posx, posy, radius, material, bodyType, false);
+    public Body makeCirclePolyBody(float posx, float posy, float radius, int material, boolean fixedRotation, BodyDef.BodyType bodyType) {
+        return makeCirclePolyBody(posx, posy, radius, material, bodyType, fixedRotation);
     }
 
 
