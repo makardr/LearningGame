@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
@@ -35,10 +36,11 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
         viewport = new ExtendViewport(camera.viewportWidth, camera.viewportHeight, camera);
+        model = new B2dModel(this, camera, controller);
         batch = new SpriteBatch();
         img = main.b2dAssetManager.manager.get("badlogic.jpg");
         hud = new Hud(batch);
-        model = new B2dModel(camera,controller);
+
         debugRenderer = new Box2DDebugRenderer(true, true, true, true, true, true);
         renderer = new Box2DDebugRenderer(false, false, false, false, false, false);
     }
@@ -86,7 +88,10 @@ public class GameScreen implements Screen {
         //Draw images
 //        batch.draw(img, 0, 0, 200, 200);
 //        batch.draw(img, 200, 200, 500, 500);
-        batch.draw(img, model.player.getPosition().x-model.player.getPosition().x/2,model.player.getPosition().y-model.player.getPosition().y/2,100,100);
+
+        int width=100;
+        int height=100;
+        batch.draw(img, model.player.body.getPosition().x-width/2, model.player.body.getPosition().y-height/2, width, height);
 
 
         batch.end();
@@ -118,4 +123,12 @@ public class GameScreen implements Screen {
     public void dispose() {
         batch.dispose();
     }
+
+    public World getWorld() {
+        return model.world;
+    }
+    public SpriteBatch getBatch() {
+        return batch;
+    }
+
 }
