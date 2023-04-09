@@ -27,17 +27,12 @@ public class B2dModel {
 
     private SpriteBatch batch;
 
-
     //    Public bodies to draw in GameScreen
-    public final World world;
-    public Word testWord;
+    public World world;
     public Player player;
 
+    private Array<B2dBodyEntity> entities;
 
-    private Array<Player> entities;
-    private Array<Player> players;
-    private Array<Player> words;
-    private Array<Player> buttons;
 
     public B2dModel(GameScreen screen, OrthographicCamera cam, KeyboardController controller, World world) {
         this.screen = screen;
@@ -46,8 +41,7 @@ public class B2dModel {
         this.world = world;
         world.setContactListener(new B2dContactListener(this));
         batch = screen.getBatch();
-        players = new Array<Player>();
-        words = new Array<Player>();
+        entities = new Array<B2dBodyEntity>();
         createBodies();
     }
 
@@ -55,16 +49,16 @@ public class B2dModel {
 
     }
 
-    public void logicStep(final float delta) {
-        if (controller.isMouse1Down && pointIntersectsBody(testWord.body, controller.mouseLocation)) {
-            testWord.destroy();
+    public void logicStep(float delta) {
+        for (B2dBodyEntity entity : entities) {
+            if (entity.body.getUserData() instanceof Word) {
+                if (controller.isMouse1Down && pointIntersectsBody(entity.body, controller.mouseLocation)) {
+                    entity.destroy();
+                }
+            }
         }
         world.step(delta, 3, 3);
-        testWord.update(delta);
-        for (B2dBodyEntity entity : players) {
-            entity.update(delta);
-        }
-
+        updateEntities(delta);
     }
 
 
@@ -83,29 +77,25 @@ public class B2dModel {
     }
 
     public void createBodies() {
-        B2dBodyFactory bodyFactory = B2dBodyFactory.getInstance(world);
-        player = new Player(bodyFactory.makeCirclePolyBody(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 100, B2dBodyFactory.STEEL, BodyDef.BodyType.StaticBody, false), new Vector2(0, 0));
-        bodyFactory.makeAllFixturesSensors(player.body);
-        players.add(player);
-        testWord = new Word(bodyFactory.makeCirclePolyBody(Gdx.graphics.getWidth() / 2 - 150, Gdx.graphics.getHeight() / 2, 100, B2dBodyFactory.STEEL, false, BodyDef.BodyType.DynamicBody), new Vector2(25, 0));
-//        bodyFactory.makeCirclePolyBody(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2+100,100,B2dBodyFactory.STEEL,false, BodyDef.BodyType.DynamicBody);
-
-    }
-    public void updateArrays(){
-
-    }
-    public Array<Player> getPlayers() {
-        return players;
+        player = new Player(world, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, new Vector2(0, 0));
+        entities.add(player);
+        Word testWord = new Word(world, Gdx.graphics.getWidth() / 2 - 150, Gdx.graphics.getHeight() / 2, new Vector2(25, 0), "word1");
+        entities.add(testWord);
+        Word testWord2 = new Word(world, Gdx.graphics.getWidth() / 2 + 150, Gdx.graphics.getHeight() / 2, new Vector2(-25, 100), "word2");
+        entities.add(testWord2);
+        Word testWord3 = new Word(world, Gdx.graphics.getWidth() / 2 + 150, Gdx.graphics.getHeight() / 2 + 250, new Vector2(-25, 100), "word2");
+        entities.add(testWord3);
+        Word testWord4 = new Word(world, Gdx.graphics.getWidth() / 2 + 200, Gdx.graphics.getHeight() / 2, new Vector2(-25, 0), "апаывпäüdüfsdff");
+        entities.add(testWord4);
     }
 
-    public Array<Player> getWords() {
-        return words;
+    public void updateEntities(float delta) {
+        for (B2dBodyEntity entity : entities) {
+            entity.update(delta);
+        }
     }
 
-    public Array<Player> getButtons() {
-        return buttons;
-    }
-    public Array<Player> getEntities() {
+    public Array<B2dBodyEntity> getEntities() {
         return entities;
     }
 }

@@ -7,6 +7,9 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
+import com.mygdx.game.actors.B2dBodyEntity;
+import com.mygdx.game.actors.Player;
+import com.mygdx.game.actors.Word;
 import com.mygdx.game.model.B2dModel;
 
 public class B2dContactListener implements ContactListener {
@@ -23,14 +26,14 @@ public class B2dContactListener implements ContactListener {
         Fixture fa = contact.getFixtureA();
         Fixture fb = contact.getFixtureB();
 
-        if (fa.getBody().getUserData() == "PLAYERBODY") {
+        if (fa.getBody().getUserData() instanceof Player) {
             Gdx.app.log("B2dContactListener", "Contact1");
-            parent.testWord.destroy();
+            ((B2dBodyEntity) fb.getBody().getUserData()).destroy();
             parent.player.damage();
             return;
-        } else if (fb.getBody().getUserData() == "PLAYERBODY") {
+        } else if (fb.getBody().getUserData() instanceof Player) {
             Gdx.app.log("B2dContactListener", "Contact2");
-            parent.testWord.destroy();
+            ((B2dBodyEntity) fb.getBody().getUserData()).destroy();
             parent.player.damage();
             return;
         }
