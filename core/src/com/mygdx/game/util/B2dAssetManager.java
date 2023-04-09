@@ -16,16 +16,16 @@ public class B2dAssetManager {
     private final String TAG = "B2dAssetManager";
 
     // Textures
-    private final String libgdxPlaceholder = "badlogic.jpg";
-    private final String loadingCircle = "images/loading.atlas";
+    public final String libgdxPlaceholder = "badlogic.jpg";
+    public final String loadingCircle = "images/loading.atlas";
     // Sounds
 
     // Music
 
     // Skin
-    private final String skin = "skin/uiskin.json";
+    public final String skin = "skin/uiskin.json";
     //    Font
-    private final String font = "font/white_font.fnt";
+    public final String font = "font/white_font.fnt";
 
 
     public void queueAddImages() {

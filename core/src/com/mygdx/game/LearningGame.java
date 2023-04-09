@@ -25,13 +25,13 @@ public class LearningGame extends Game {
     public final static int PREFERENCES = 2;
     public final static int GAMESCREEN = 3;
     public final static int ENDGAME = 4;
-
+    private final String TAG = "Main";
 
     public B2dAssetManager b2dAssetManager = new B2dAssetManager();
 
+
     @Override
     public void create() {
-
         changeScreen(LOADING);
     }
 
@@ -61,13 +61,21 @@ public class LearningGame extends Game {
         }
     }
 
-    private void restartGame(){
+    public void restartGame() {
+        try {
+
+            changeScreen(ENDGAME);
+//            gameScreen.dispose();
+//            gameScreen.gameStart();
+        } catch (Exception e){
+            Gdx.app.error(TAG, "e.getMessage()");
+            Gdx.app.error(TAG, e.getMessage());
+        }
 
     }
 
     @Override
     public void dispose() {
         super.dispose();
-        b2dAssetManager.manager.dispose();
     }
 }

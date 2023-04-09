@@ -24,7 +24,7 @@ public class B2dModel {
 
     private KeyboardController controller;
     private GameScreen screen;
-    private Array<Player> players;
+
     private SpriteBatch batch;
 
 
@@ -33,15 +33,26 @@ public class B2dModel {
     public Word testWord;
     public Player player;
 
-    public B2dModel(GameScreen screen, OrthographicCamera cam, KeyboardController controller) {
+
+    private Array<Player> entities;
+    private Array<Player> players;
+    private Array<Player> words;
+    private Array<Player> buttons;
+
+    public B2dModel(GameScreen screen, OrthographicCamera cam, KeyboardController controller, World world) {
         this.screen = screen;
         this.cam = cam;
         this.controller = controller;
-        world = new World(new Vector2(0, 0f), true);
+        this.world = world;
         world.setContactListener(new B2dContactListener(this));
         batch = screen.getBatch();
         players = new Array<Player>();
+        words = new Array<Player>();
         createBodies();
+    }
+
+    private void startGame() {
+
     }
 
     public void logicStep(final float delta) {
@@ -73,11 +84,28 @@ public class B2dModel {
 
     public void createBodies() {
         B2dBodyFactory bodyFactory = B2dBodyFactory.getInstance(world);
-        player = new Player(bodyFactory.makeCirclePolyBody(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 100, B2dBodyFactory.STEEL, BodyDef.BodyType.StaticBody, false),new Vector2(0,0));
+        player = new Player(bodyFactory.makeCirclePolyBody(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 100, B2dBodyFactory.STEEL, BodyDef.BodyType.StaticBody, false), new Vector2(0, 0));
         bodyFactory.makeAllFixturesSensors(player.body);
         players.add(player);
-        testWord = new Word(bodyFactory.makeCirclePolyBody(Gdx.graphics.getWidth() / 2 - 150, Gdx.graphics.getHeight() / 2, 100, B2dBodyFactory.STEEL, false, BodyDef.BodyType.DynamicBody),new Vector2(25,0));
+        testWord = new Word(bodyFactory.makeCirclePolyBody(Gdx.graphics.getWidth() / 2 - 150, Gdx.graphics.getHeight() / 2, 100, B2dBodyFactory.STEEL, false, BodyDef.BodyType.DynamicBody), new Vector2(25, 0));
 //        bodyFactory.makeCirclePolyBody(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2+100,100,B2dBodyFactory.STEEL,false, BodyDef.BodyType.DynamicBody);
 
+    }
+    public void updateArrays(){
+
+    }
+    public Array<Player> getPlayers() {
+        return players;
+    }
+
+    public Array<Player> getWords() {
+        return words;
+    }
+
+    public Array<Player> getButtons() {
+        return buttons;
+    }
+    public Array<Player> getEntities() {
+        return entities;
     }
 }
