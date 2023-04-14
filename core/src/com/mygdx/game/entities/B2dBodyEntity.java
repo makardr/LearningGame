@@ -1,4 +1,4 @@
-package com.mygdx.game.actors;
+package com.mygdx.game.entities;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
-import com.mygdx.game.views.GameScreen;
 
 public abstract class B2dBodyEntity extends Sprite {
     public Body body;
@@ -15,6 +14,7 @@ public abstract class B2dBodyEntity extends Sprite {
     public int positionX;
     public int positionY;
     public World world;
+    public boolean active;
 
     //    public B2dBodyEntity(GameScreen screen,Body body, float x, float y) {
     public B2dBodyEntity(World world, int positionX, int positionY, Vector2 velocity) {
@@ -34,4 +34,8 @@ public abstract class B2dBodyEntity extends Sprite {
     public abstract void draw(Batch batch, Texture texture);
 
     public abstract void draw(Batch batch, BitmapFont font);
+    public abstract String getData();
+    public abstract void setActive();
+    public abstract void setInactive();
+
 }

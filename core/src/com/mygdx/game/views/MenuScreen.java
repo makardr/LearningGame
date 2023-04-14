@@ -28,9 +28,6 @@ public class MenuScreen implements Screen {
         Gdx.app.log(TAG, "Show");
 
         Gdx.input.setInputProcessor(stage);
-
-        main.b2dAssetManager.queueAddSkin();
-        main.b2dAssetManager.manager.finishLoading();
         skin = main.b2dAssetManager.manager.get("skin/uiskin.json");
 
         TextButton newGame = new TextButton("New Game", skin);

@@ -1,6 +1,7 @@
 package com.mygdx.game.views;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -10,16 +11,27 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.LearningGame;
-import com.mygdx.game.actors.B2dBodyEntity;
-import com.mygdx.game.actors.Player;
-import com.mygdx.game.actors.Word;
+import com.mygdx.game.entities.B2dBodyEntity;
+import com.mygdx.game.entities.ChooseButton;
+import com.mygdx.game.entities.Player;
+import com.mygdx.game.entities.Word;
 import com.mygdx.game.hud.Hud;
 import com.mygdx.game.model.B2dModel;
 import com.mygdx.game.util.KeyboardController;
+
+import java.util.Arrays;
+import java.util.Random;
 
 public class GameScreen implements Screen {
     private final String TAG = "GameScreen";
@@ -27,6 +39,7 @@ public class GameScreen implements Screen {
     private final OrthographicCamera camera;
     private final SpriteBatch batch;
     private final Texture img;
+    public final Word dummyWord;
     private B2dModel model;
     private final Box2DDebugRenderer renderer;
     private final Box2DDebugRenderer debugRenderer;
@@ -35,9 +48,16 @@ public class GameScreen implements Screen {
     private Viewport viewport;
     private final World world;
     private Array<B2dBodyEntity> entities;
+    private Array<ChooseButton> buttons;
     //    Public
     public Hud hud;
+    private Stage stage;
+    private Skin skin;
+    public Word currentChosenWordEntity;
 
+    public boolean wordChosenCorrectlyState;
+    public boolean wordChosenIncorrectlyState;
+    String[] arr = {"apple", "banana", "cherry", "date", "elderberry"};
 
     public GameScreen(LearningGame main) {
         this.main = main;
@@ -45,22 +65,27 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
         viewport = new ExtendViewport(camera.viewportWidth, camera.viewportHeight, camera);
+        stage = new Stage(viewport);
         batch = new SpriteBatch();
 
-        hud = new Hud(batch);
 
+//        Load assets
         img = main.b2dAssetManager.manager.get(main.b2dAssetManager.libgdxPlaceholder);
         font = main.b2dAssetManager.manager.get(main.b2dAssetManager.font);
+        skin = main.b2dAssetManager.manager.get("skin/uiskin.json");
+
 //        font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         font.setColor(0.0f, 1.0f, 0.0f, 1.0f);
         font.getData().setScale(1f, 1f);
 
+        hud = new Hud(batch);
         debugRenderer = new Box2DDebugRenderer(true, true, true, true, true, true);
         renderer = new Box2DDebugRenderer(false, false, false, false, false, false);
 
         world = new World(new Vector2(0, 0f), true);
         model = new B2dModel(this, camera, controller, world);
-        entities=model.getEntities();
+        entities = model.getEntities();
+        dummyWord = new Word(world, -100, -100, new Vector2(0, 0), "");
     }
 
     public void gameStart() {
@@ -71,9 +96,31 @@ public class GameScreen implements Screen {
     public void show() {
         Gdx.app.log(TAG, "Screen shown");
         Gdx.app.log(TAG, "Screen is active" + this.toString());
-        Gdx.input.setInputProcessor(controller);
+        InputMultiplexer multiplexer = new InputMultiplexer();
+        Gdx.input.setInputProcessor(multiplexer);
+        multiplexer.addProcessor(controller);
+        multiplexer.addProcessor(stage);
+
         Gdx.app.log(TAG, Gdx.graphics.getWidth() + " " + Gdx.graphics.getHeight());
         gameStart();
+
+        Table table = makeTable();
+
+        stage.addActor(table);
+
+        startNewGame();
+    }
+    public void startNewGame(){
+        destroyButtons();
+        setCurrentWord(dummyWord);
+    }
+
+    public void setCurrentWord(Word word) {
+        this.currentChosenWordEntity = word;
+    }
+
+    public String getCurrentWord() {
+        return currentChosenWordEntity.getData();
     }
 
     @Override
@@ -84,32 +131,68 @@ public class GameScreen implements Screen {
         updateController();
         update(delta);
         drawBatch();
+
+        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
+        stage.draw();
     }
 
     private void update(float delta) {
         model.logicStep(delta);
         viewport.apply();
         camera.update();
-        hud.updateHud(String.valueOf(model.player.lives));
 
+        hud.updateHud(model.player.getLives(),currentChosenWordEntity.getData());
+        gameLogic();
         if (model.player.lives <= 0) {
-            for (B2dBodyEntity entity : entities) {
-                entity.destroy();
-            }
-            Gdx.app.log(TAG, "restarted");
-            main.restartGame();
+            restartGame();
+        }
+
+    }
+
+    private void gameLogic() {
+        if (wordChosenCorrectlyState == true) {
+            Gdx.app.log(TAG, "wordChosenCorrectlyState true");
+            wordChosenCorrectlyState = false;
+            currentChosenWordEntity.destroy();
+            currentChosenWordEntity=dummyWord;
+            destroyButtons();
+        }
+        if (wordChosenIncorrectlyState == true) {
+            Gdx.app.log(TAG, "wordChosenIncorrectlyState true");
+            wordChosenIncorrectlyState = false;
+            currentChosenWordEntity.destroy();
+            model.player.damage();
+            currentChosenWordEntity=dummyWord;
+            destroyButtons();
+        }
+    }
+
+    public void restartGame() {
+        for (B2dBodyEntity entity : entities) {
+//            Player resets lives in destroy method
+            entity.destroy();
+        }
+        Gdx.app.log(TAG, "restarted");
+        currentChosenWordEntity = dummyWord;
+        destroyButtons();
+        main.restartGame();
+    }
+
+    private void destroyButtons() {
+        for (ChooseButton buttonObj : buttons) {
+            buttonObj.destroy();
         }
     }
 
     private void drawBatch() {
-        batch.setProjectionMatrix(hud.stage.getCamera().combined);
+        batch.setProjectionMatrix(camera.combined);
         batch.begin();
 
         for (B2dBodyEntity entity : entities) {
-            if(entity.body.getUserData() instanceof Player){
-                entity.draw(batch,img);
-            } else if (entity.body.getUserData() instanceof Word){
-                entity.draw(batch,font);
+            if (entity.body.getUserData() instanceof Player) {
+                entity.draw(batch, img);
+            } else if (entity.body.getUserData() instanceof Word) {
+                entity.draw(batch, font);
             }
         }
         batch.end();
@@ -120,16 +203,12 @@ public class GameScreen implements Screen {
     private void updateController() {
         //        Camera test control
         if (controller.left) {
-            Gdx.app.log("Camera", "Left");
             camera.position.set(camera.position.x - 1f, camera.position.y, 0);
         } else if (controller.right) {
-            Gdx.app.log("Camera", "Right");
             camera.position.set(camera.position.x + 1f, camera.position.y, 0);
         } else if (controller.up) {
-            Gdx.app.log("Camera", "Up");
             camera.position.set(camera.position.x, camera.position.y + 1f, 0);
         } else if (controller.down) {
-            Gdx.app.log("Camera", "Down");
             camera.position.set(camera.position.x, camera.position.y - 1f, 0);
         }
     }
@@ -166,6 +245,8 @@ public class GameScreen implements Screen {
         renderer.dispose();
         model = null;
         Gdx.input.setInputProcessor(null);
+        stage.dispose();
+        skin.dispose();
     }
 
     public SpriteBatch getBatch() {
@@ -176,5 +257,64 @@ public class GameScreen implements Screen {
         return world;
     }
 
+    private Table makeTable() {
+        Table table = new Table();
+        table.setBounds(viewport.getScreenX(), viewport.getScreenY(), Gdx.graphics.getWidth(), Gdx.graphics.getHeight() / 3);
+//        table.setFillParent(true);
+        table.setDebug(true);
 
+//        Create buttons
+        buttons = new Array<ChooseButton>();
+
+        for (int i = 0; i < 3; i++) {
+            final ChooseButton buttonObj = new ChooseButton("word" + i, skin, this);
+            buttonObj.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    buttonObj.buttonAction();
+                }
+            });
+            buttons.add(buttonObj);
+        }
+
+        for (ChooseButton buttonObj : buttons) {
+            table.add(buttonObj).fillX().uniformX().uniformY().width(Gdx.graphics.getWidth() * 0.8f).height(Gdx.graphics.getHeight() / 8);
+            buttonObj.activate("тест");
+            table.row();
+        }
+        return table;
+    }
+
+    public void showButtons(String wordData) {
+        String[] threeArray = createArray(wordData, arr);
+        int i=0;
+        for (ChooseButton buttonObj : buttons) {
+            buttonObj.activate(threeArray[i]);
+            i+=1;
+        }
+    }
+
+    public static String[] createArray(String passedString, String[] inputArray) {
+        String[] newArray = new String[3];
+        newArray[0] = passedString;
+        Random rand = new Random();
+        int randomIndex1 = rand.nextInt(inputArray.length);
+        int randomIndex2 = rand.nextInt(inputArray.length);
+        while (randomIndex2 == randomIndex1) {
+            randomIndex2 = rand.nextInt(inputArray.length);
+        }
+        newArray[1] = inputArray[randomIndex1];
+        newArray[2] = inputArray[randomIndex2];
+        return shuffleArray(newArray);
+    }
+    public static String[] shuffleArray(String[] array) {
+        Random rand = new Random();
+        for (int i = array.length - 1; i > 0; i--) {
+            int j = rand.nextInt(i + 1);
+            String temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+        }
+        return array;
+    }
 }

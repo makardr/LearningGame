@@ -6,19 +6,18 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
-import com.mygdx.game.actors.B2dBodyEntity;
-import com.mygdx.game.actors.Player;
-import com.mygdx.game.actors.Word;
-import com.mygdx.game.util.B2dBodyFactory;
+import com.mygdx.game.entities.B2dBodyEntity;
+import com.mygdx.game.entities.Player;
+import com.mygdx.game.entities.Word;
 import com.mygdx.game.util.B2dContactListener;
 import com.mygdx.game.util.KeyboardController;
 import com.mygdx.game.views.GameScreen;
 
 
 public class B2dModel {
+    private final String TAG="B2dModel";
     private final OrthographicCamera cam;
 
 
@@ -52,8 +51,11 @@ public class B2dModel {
     public void logicStep(float delta) {
         for (B2dBodyEntity entity : entities) {
             if (entity.body.getUserData() instanceof Word) {
-                if (controller.isMouse1Down && pointIntersectsBody(entity.body, controller.mouseLocation)) {
-                    entity.destroy();
+                if (screen.currentChosenWordEntity.equals(screen.dummyWord)) {
+                    if (controller.isMouse1Down && pointIntersectsBody(entity.body, controller.mouseLocation)) {
+                        screen.setCurrentWord((Word) entity);
+                        screen.showButtons(entity.getData());
+                    }
                 }
             }
         }
@@ -62,30 +64,17 @@ public class B2dModel {
     }
 
 
-    public boolean pointIntersectsBody(Body body, Vector2 mouseLocation) {
-        try {
-            Vector3 mousePos = new Vector3(mouseLocation, 0); //convert mouseLocation to 3D position
-            cam.unproject(mousePos); // convert from screen position to world position
-            if (body.getFixtureList().first().testPoint(mousePos.x, mousePos.y)) {
-                return true;
-            }
-            return false;
-        } catch (IllegalStateException e) {
-            return false;
-        }
-
-    }
 
     public void createBodies() {
         player = new Player(world, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, new Vector2(0, 0));
         entities.add(player);
-        Word testWord = new Word(world, Gdx.graphics.getWidth() / 2 - 150, Gdx.graphics.getHeight() / 2, new Vector2(25, 0), "word1");
+        Word testWord = new Word(world, Gdx.graphics.getWidth() / 2 - 150, Gdx.graphics.getHeight() / 2, new Vector2(10, 0), "word0");
         entities.add(testWord);
         Word testWord2 = new Word(world, Gdx.graphics.getWidth() / 2 + 150, Gdx.graphics.getHeight() / 2, new Vector2(-25, 100), "word2");
         entities.add(testWord2);
         Word testWord3 = new Word(world, Gdx.graphics.getWidth() / 2 + 150, Gdx.graphics.getHeight() / 2 + 250, new Vector2(-25, 100), "word2");
         entities.add(testWord3);
-        Word testWord4 = new Word(world, Gdx.graphics.getWidth() / 2 + 200, Gdx.graphics.getHeight() / 2, new Vector2(-25, 0), "апаывпäüdüfsdff");
+        Word testWord4 = new Word(world, Gdx.graphics.getWidth() / 2 + 200, Gdx.graphics.getHeight() / 2, new Vector2(-25, 0), "тестÕÜÄ");
         entities.add(testWord4);
     }
 
@@ -97,5 +86,17 @@ public class B2dModel {
 
     public Array<B2dBodyEntity> getEntities() {
         return entities;
+    }
+    public boolean pointIntersectsBody(Body body, Vector2 mouseLocation) {
+        try {
+            Vector3 mousePos = new Vector3(mouseLocation, 0); //convert mouseLocation to 3D position
+            cam.unproject(mousePos); // convert from screen position to world position
+            if (body.getFixtureList().first().testPoint(mousePos.x, mousePos.y)) {
+                return true;
+            }
+            return false;
+        } catch (IllegalStateException e) {
+            return false;
+        }
     }
 }

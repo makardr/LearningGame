@@ -1,16 +1,14 @@
-package com.mygdx.game.actors;
+package com.mygdx.game.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.util.B2dBodyFactory;
-import com.mygdx.game.views.GameScreen;
 
 public class Player extends B2dBodyEntity {
     private final Vector2 resetPosition;
@@ -24,7 +22,7 @@ public class Player extends B2dBodyEntity {
     public Player(World world, int positionX, int positionY, Vector2 velocity) {
         super(world, positionX, positionY, velocity);
         this.body = defineEntity();
-        lives = 3;
+        lives = 10;
         resetPosition = new Vector2(body.getPosition().x, body.getPosition().y);
     }
 
@@ -33,7 +31,7 @@ public class Player extends B2dBodyEntity {
         if (setToDestroy) {
             Gdx.app.log(TAG, "setToDestroy");
             body.setTransform(resetPosition, body.getAngle());
-            lives=3;
+            lives=10;
             setToDestroy = false;
         } else {
             body.setLinearVelocity(velocity);
@@ -66,5 +64,23 @@ public class Player extends B2dBodyEntity {
     @Override
     public void draw(Batch batch, BitmapFont font) {
 
+    }
+
+    @Override
+    public String getData() {
+        return null;
+    }
+
+    @Override
+    public void setActive() {
+
+    }
+
+    @Override
+    public void setInactive() {
+
+    }
+    public String getLives(){
+        return Integer.toString(lives);
     }
 }

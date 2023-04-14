@@ -38,7 +38,7 @@ public class GameOverScreen implements Screen {
         }
 
         if (shouldChangeScreen) {
-            main.changeScreen(main.GAMESCREEN);
+            main.changeScreen(main.MENU);
 
 //            main.setScreen(new GameScreen(main));
         }

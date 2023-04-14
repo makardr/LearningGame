@@ -1,4 +1,4 @@
-package com.mygdx.game.actors;
+package com.mygdx.game.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -16,7 +16,7 @@ public class Word extends B2dBodyEntity {
     private final String TAG = "Word";
     private Vector2 resetPosition;
     private String currentText;
-
+    private String[] currentTranslation;
 
     public Word(World world, int positionX, int positionY, Vector2 velocity,String currentText) {
         super(world, positionX, positionY, velocity);
@@ -24,16 +24,18 @@ public class Word extends B2dBodyEntity {
         this.currentText=currentText;
         setToDestroy = false;
         resetPosition = new Vector2(body.getPosition().x, body.getPosition().y);
+        active=true;
     }
 
     @Override
     public void update(float dt) {
-        if (setToDestroy) {
-            body.setTransform(resetPosition, body.getAngle());
-            Gdx.app.log(TAG, "setToDestroy");
-            setToDestroy = false;
-        } else {
-            body.setLinearVelocity(velocity);
+        if (active) {
+            if (setToDestroy) {
+                body.setTransform(resetPosition, body.getAngle());
+                setToDestroy = false;
+            } else {
+                body.setLinearVelocity(velocity);
+            }
         }
     }
 
@@ -43,15 +45,14 @@ public class Word extends B2dBodyEntity {
         body = bodyFactory.makeCirclePolyBody(positionX, positionY, 100, B2dBodyFactory.STEEL, true, BodyDef.BodyType.DynamicBody);
 //        body.setUserData("WORDBODY");
         body.setUserData(this);
-        if (body.getUserData() instanceof Word){
-
-        }
+//        if (body.getUserData() instanceof Word){
+//
+//        }
         return body;
     }
 
     public void destroy() {
         setToDestroy = true;
-
     }
 
 
@@ -62,14 +63,24 @@ public class Word extends B2dBodyEntity {
 
     @Override
     public void draw(Batch batch, BitmapFont font) {
-        font.draw(batch, getCurrentText(), body.getPosition().x - 25, body.getPosition().y + 12.5f);
+        font.draw(batch, getData(), body.getPosition().x - 25, body.getPosition().y + 12.5f);
+    }
+    public void setCurrentText(String currentText) {
+        this.currentText = currentText;
     }
 
-    public String getCurrentText() {
+    @Override
+    public String getData() {
         return currentText;
     }
 
-    public void setCurrentText(String currentText) {
-        this.currentText = currentText;
+    @Override
+    public void setActive() {
+        active=true;
+    }
+
+    @Override
+    public void setInactive() {
+        active=false;
     }
 }
