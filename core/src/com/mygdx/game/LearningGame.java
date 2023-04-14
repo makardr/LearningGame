@@ -4,12 +4,12 @@ package com.mygdx.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.mygdx.game.util.B2dAssetManager;
-import com.mygdx.game.views.AddWordsScreen;
-import com.mygdx.game.views.EndScreen;
+import com.mygdx.game.views.GameOverScreen;
 import com.mygdx.game.views.GameScreen;
 import com.mygdx.game.views.LoadingScreen;
 import com.mygdx.game.views.MenuScreen;
 import com.mygdx.game.views.PreferencesScreen;
+import com.mygdx.game.views.UserDictionaryAddScreen;
 
 public class LearningGame extends Game {
     private LoadingScreen loadingScreen;
@@ -17,8 +17,8 @@ public class LearningGame extends Game {
     private PreferencesScreen preferencesScreen;
 
     private GameScreen gameScreen;
-    private EndScreen endScreen;
-    private AddWordsScreen addWordsScreen;
+    private GameOverScreen gameOverScreen;
+    private UserDictionaryAddScreen userDictionaryAddScreen;
 
     public final static int LOADING = 0;
     public final static int MENU = 1;
@@ -55,8 +55,8 @@ public class LearningGame extends Game {
                 this.setScreen(gameScreen);
                 break;
             case ENDGAME:
-                if (endScreen == null) endScreen = new EndScreen(this);
-                this.setScreen(endScreen);
+                if (gameOverScreen == null) gameOverScreen = new GameOverScreen(this);
+                this.setScreen(gameOverScreen);
                 break;
         }
     }

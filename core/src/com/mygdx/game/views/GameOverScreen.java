@@ -5,18 +5,20 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.mygdx.game.LearningGame;
 
-public class EndScreen implements Screen {
+public class GameOverScreen implements Screen {
     private final LearningGame main;
     private float elapsed;
     private boolean shouldChangeScreen;
 
-    public EndScreen(LearningGame main) {
+    public GameOverScreen(LearningGame main) {
         this.main = main;
     }
 
     @Override
     public void show() {
-
+//        Timer how much time the game lasted
+//        Personal best for this dictionary
+//        Accuracy
     }
 
     @Override

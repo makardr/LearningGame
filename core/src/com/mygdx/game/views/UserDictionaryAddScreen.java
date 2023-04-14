@@ -3,10 +3,10 @@ package com.mygdx.game.views;
 import com.badlogic.gdx.Screen;
 import com.mygdx.game.LearningGame;
 
-public class AddWordsScreen implements Screen {
+public class UserDictionaryAddScreen implements Screen {
     private final LearningGame main;
 
-    public AddWordsScreen(LearningGame main) {
+    public UserDictionaryAddScreen(LearningGame main) {
         this.main = main;
     }
 

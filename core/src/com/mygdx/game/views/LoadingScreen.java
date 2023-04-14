@@ -35,7 +35,7 @@ public class LoadingScreen implements Screen {
         spriteBatch.draw(loading_circle_grey, Gdx.graphics.getWidth() / 2 - 25, Gdx.graphics.getHeight() / 2 - 25, 50, 50);
         spriteBatch.end();
 
-        main.changeScreen(LearningGame.GAMESCREEN);
+        main.changeScreen(LearningGame.MENU);
 
     }
 
