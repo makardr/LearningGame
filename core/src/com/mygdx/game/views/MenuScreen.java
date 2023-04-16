@@ -34,7 +34,7 @@ public class MenuScreen implements Screen {
         newGame.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                main.changeScreen(LearningGame.GAMESCREEN);
+                main.changeScreen(LearningGame.CHOOSESET);
             }
         });
 
@@ -70,10 +70,8 @@ public class MenuScreen implements Screen {
 
     @Override
     public void render(float delta) {
-//        Clear screen
         Gdx.gl.glClearColor(0f, 0f, 0f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-//        Gdx.app.log(TAG,"Render");
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
     }

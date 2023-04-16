@@ -9,23 +9,29 @@ import com.mygdx.game.views.GameScreen;
 import com.mygdx.game.views.LoadingScreen;
 import com.mygdx.game.views.MenuScreen;
 import com.mygdx.game.views.PreferencesScreen;
-import com.mygdx.game.views.UserDictionaryAddScreen;
+import com.mygdx.game.views.EditSetScreen;
+import com.mygdx.game.views.ChooseSetScreen;
 
 public class LearningGame extends Game {
+    private final String TAG = "Main";
     private LoadingScreen loadingScreen;
     private MenuScreen menuScreen;
     private PreferencesScreen preferencesScreen;
-
     private GameScreen gameScreen;
     private GameOverScreen gameOverScreen;
-    private UserDictionaryAddScreen userDictionaryAddScreen;
+    private EditSetScreen editSetScreen;
+    private ChooseSetScreen chooseSetScreen;
+    private String currentSet;
 
     public final static int LOADING = 0;
     public final static int MENU = 1;
     public final static int PREFERENCES = 2;
     public final static int GAMESCREEN = 3;
     public final static int ENDGAME = 4;
-    private final String TAG = "Main";
+    public final static int CHOOSESET = 5;
+    public final static int EDITSET = 6;
+
+
 
     public B2dAssetManager b2dAssetManager = new B2dAssetManager();
 
@@ -58,15 +64,20 @@ public class LearningGame extends Game {
                 if (gameOverScreen == null) gameOverScreen = new GameOverScreen(this);
                 this.setScreen(gameOverScreen);
                 break;
+            case CHOOSESET:
+                if (chooseSetScreen == null) chooseSetScreen = new ChooseSetScreen(this);
+                this.setScreen(chooseSetScreen);
+                break;
+            case EDITSET:
+                if (editSetScreen == null) editSetScreen = new EditSetScreen(this);
+                this.setScreen(editSetScreen);
+                break;
         }
     }
 
     public void restartGame() {
         try {
-
             changeScreen(ENDGAME);
-//            gameScreen.dispose();
-//            gameScreen.gameStart();
         } catch (Exception e){
             Gdx.app.error(TAG, "e.getMessage()");
             Gdx.app.error(TAG, e.getMessage());
@@ -87,4 +98,12 @@ public class LearningGame extends Game {
     public void dispose() {
         super.dispose();
     }
+    public String getCurrentSet() {
+        return currentSet;
+    }
+
+    public void setCurrentSet(String currentSet) {
+        this.currentSet = currentSet;
+    }
+
 }
