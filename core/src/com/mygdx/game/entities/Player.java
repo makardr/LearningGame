@@ -13,8 +13,8 @@ import com.mygdx.game.util.B2dBodyFactory;
 public class Player extends B2dBodyEntity {
     private final Vector2 resetPosition;
     public int lives;
+    private int defaultLives=1;
     private boolean setToDestroy;
-    private boolean destroyed;
     private final String TAG = "Player";
 
 
@@ -22,8 +22,9 @@ public class Player extends B2dBodyEntity {
     public Player(World world, int positionX, int positionY, Vector2 velocity) {
         super(world, positionX, positionY, velocity);
         this.body = defineEntity();
-        lives = 10;
         resetPosition = new Vector2(body.getPosition().x, body.getPosition().y);
+        lives = defaultLives;
+
     }
 
     @Override
@@ -31,7 +32,7 @@ public class Player extends B2dBodyEntity {
         if (setToDestroy) {
             Gdx.app.log(TAG, "setToDestroy");
             body.setTransform(resetPosition, body.getAngle());
-            lives=10;
+            lives=defaultLives;
             setToDestroy = false;
         } else {
             body.setLinearVelocity(velocity);
@@ -82,5 +83,9 @@ public class Player extends B2dBodyEntity {
     }
     public String getLives(){
         return Integer.toString(lives);
+    }
+
+    public void setDefaultLives(int defaultLives) {
+        this.defaultLives = defaultLives;
     }
 }

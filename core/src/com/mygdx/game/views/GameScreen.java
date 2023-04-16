@@ -57,7 +57,12 @@ public class GameScreen implements Screen {
 
     public boolean wordChosenCorrectlyState;
     public boolean wordChosenIncorrectlyState;
-    String[] arr = {"apple", "banana", "cherry", "date", "elderberry"};
+    String[] currentGameArray = {"apple", "banana", "cherry", "date", "elderberry"};
+
+    private long startTime = System.currentTimeMillis();
+    private float currentTime;
+    private float lastTime;
+    private String remainingLives;
 
     public GameScreen(LearningGame main) {
         this.main = main;
@@ -88,9 +93,7 @@ public class GameScreen implements Screen {
         dummyWord = new Word(world, -100, -100, new Vector2(0, 0), "");
     }
 
-    public void gameStart() {
 
-    }
 
     @Override
     public void show() {
@@ -102,7 +105,6 @@ public class GameScreen implements Screen {
         multiplexer.addProcessor(stage);
 
         Gdx.app.log(TAG, Gdx.graphics.getWidth() + " " + Gdx.graphics.getHeight());
-        gameStart();
 
         Table table = makeTable();
 
@@ -110,9 +112,30 @@ public class GameScreen implements Screen {
 
         startNewGame();
     }
+
+//    startNewGame When the screen is shown
     public void startNewGame(){
+
         destroyButtons();
         setCurrentWord(dummyWord);
+        currentTime=0;
+//        populateGameDictionary();
+
+    }
+//    restartGame is to reset data and change screen to main
+    public void restartGame() {
+        lastTime=currentTime;
+        remainingLives=model.player.getLives();
+        for (B2dBodyEntity entity : entities) {
+//            Player resets lives in destroy method
+            entity.destroy();
+        }
+
+        startNewGame();
+        main.restartGame();
+    }
+    private void populateGameDictionary(String[] newArray) {
+        currentGameArray=newArray;
     }
 
     public void setCurrentWord(Word word) {
@@ -140,8 +163,8 @@ public class GameScreen implements Screen {
         model.logicStep(delta);
         viewport.apply();
         camera.update();
-
-        hud.updateHud(model.player.getLives(),currentChosenWordEntity.getData());
+        hud.updateHud(model.player.getLives(),getCurrentTime(),currentChosenWordEntity.getData());
+        currentTime+=delta;
         gameLogic();
         if (model.player.lives <= 0) {
             restartGame();
@@ -167,16 +190,6 @@ public class GameScreen implements Screen {
         }
     }
 
-    public void restartGame() {
-        for (B2dBodyEntity entity : entities) {
-//            Player resets lives in destroy method
-            entity.destroy();
-        }
-        Gdx.app.log(TAG, "restarted");
-        currentChosenWordEntity = dummyWord;
-        destroyButtons();
-        main.restartGame();
-    }
 
     private void destroyButtons() {
         for (ChooseButton buttonObj : buttons) {
@@ -286,7 +299,7 @@ public class GameScreen implements Screen {
     }
 
     public void showButtons(String wordData) {
-        String[] threeArray = createArray(wordData, arr);
+        String[] threeArray = createArray(wordData, currentGameArray);
         int i=0;
         for (ChooseButton buttonObj : buttons) {
             buttonObj.activate(threeArray[i]);
@@ -317,4 +330,29 @@ public class GameScreen implements Screen {
         }
         return array;
     }
+    public String getCurrentTime() {
+        float minutes = (float)Math.floor(currentTime / 60.0f);
+        float seconds = currentTime - minutes * 60.0f;
+        return String.format("%.0fm%.0fs", minutes, seconds);
+    }
+    public String getCurrentTimeDt() {
+        float minutes = (float)Math.floor(currentTime / 60.0f);
+        float seconds = currentTime - minutes * 60.0f;
+        return String.format("%.0fm%.0fs", minutes, seconds);
+    }
+    public String getLastTime() {
+        float minutes = (float)Math.floor(lastTime / 60.0f);
+        float seconds = lastTime - minutes * 60.0f;
+        return String.format("%.0fm%.0fs", minutes, seconds);
+    }
+    public float getLastTimeDt() {
+        return lastTime;
+    }
+    public String getCurrentLives(){
+        return model.player.getLives();
+    }
+
+//    public void setCurrentTime(String currentTime) {
+//        this.currentTime = currentTime;
+//    }
 }

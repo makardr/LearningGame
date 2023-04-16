@@ -30,7 +30,7 @@ public class MenuScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
         skin = main.b2dAssetManager.manager.get("skin/uiskin.json");
 
-        TextButton newGame = new TextButton("New Game", skin);
+        TextButton newGame = new TextButton("Start Game", skin);
         newGame.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -58,11 +58,12 @@ public class MenuScreen implements Screen {
         table.setFillParent(true);
         table.setDebug(true);
 
-        table.add(newGame).fillX().uniformX().uniformY().width(500).height(150);
-        table.row().pad(10, 0, 10, 0);
-        table.add(preferences).fillX().uniformX().uniformY();
+        table.add(newGame).fillX().uniformX().uniformY().width(400).height(150);
+//        table.row().pad(10, 0, 10, 0);
         table.row();
-        table.add(exit).fillX().uniformX().uniformY();
+        table.add(preferences).fillX().uniformX().uniformY().width(400).height(150);
+        table.row();
+        table.add(exit).fillX().uniformX().uniformY().width(400).height(150);
 
         stage.addActor(table);
     }

@@ -17,13 +17,12 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.LearningGame;
 
 public class Hud implements Disposable {
-
     public Stage stage;
     private Viewport viewport;
     //    Widgets
     private Label livesLabel;
     private final Label objectLabel;
-    private String value;
+    private final Label timeLabel;
 
     public Hud(SpriteBatch spriteBatch) {
         viewport = new ScreenViewport(new OrthographicCamera());
@@ -32,16 +31,19 @@ public class Hud implements Disposable {
         table.top();
         table.setFillParent(true);
         table.setDebug(true);
-        value="";
+        String value = "";
         livesLabel = new Label(value, new com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle(new BitmapFont(), Color.WHITE));
         table.add(livesLabel).expandX().padTop(10);
+        timeLabel = new Label(value, new com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        table.add(timeLabel).expandX().padTop(10);
         objectLabel = new Label(value, new com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle(new BitmapFont(), Color.WHITE));
         table.add(objectLabel).expandX().padTop(10);
         stage.addActor(table);
     }
 
-    public void updateHud(String newLivesValue,String newObjectValue) {
+    public void updateHud(String newLivesValue, String newTimeValue, String newObjectValue) {
         livesLabel.setText(newLivesValue);
+        timeLabel.setText(newTimeValue);
         objectLabel.setText(newObjectValue);
     }
 

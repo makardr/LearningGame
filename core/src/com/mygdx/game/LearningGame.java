@@ -74,6 +74,15 @@ public class LearningGame extends Game {
 
     }
 
+    public String getTime(){
+        return gameScreen.getLastTime();
+    }
+    public float getTimeDt(){
+        return gameScreen.getLastTimeDt();
+    }
+    public String getLives(){
+        return gameScreen.getCurrentLives();
+    }
     @Override
     public void dispose() {
         super.dispose();
