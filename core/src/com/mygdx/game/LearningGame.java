@@ -3,7 +3,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.mygdx.game.util.B2dAssetManager;
+import com.mygdx.game.util.MyAssetManager;
 import com.mygdx.game.views.GameOverScreen;
 import com.mygdx.game.views.GameScreen;
 import com.mygdx.game.views.LoadingScreen;
@@ -33,7 +33,7 @@ public class LearningGame extends Game {
 
 
 
-    public B2dAssetManager b2dAssetManager = new B2dAssetManager();
+    public MyAssetManager myAssetManager = new MyAssetManager();
 
 
     @Override

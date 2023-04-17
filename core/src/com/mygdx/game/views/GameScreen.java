@@ -13,10 +13,8 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -30,7 +28,6 @@ import com.mygdx.game.hud.Hud;
 import com.mygdx.game.model.B2dModel;
 import com.mygdx.game.util.KeyboardController;
 
-import java.util.Arrays;
 import java.util.Random;
 
 public class GameScreen implements Screen {
@@ -75,9 +72,9 @@ public class GameScreen implements Screen {
 
 
 //        Load assets
-        img = main.b2dAssetManager.manager.get(main.b2dAssetManager.libgdxPlaceholder);
-        font = main.b2dAssetManager.manager.get(main.b2dAssetManager.font);
-        skin = main.b2dAssetManager.manager.get("skin/uiskin.json");
+        img = main.myAssetManager.manager.get(main.myAssetManager.libgdxPlaceholder);
+        font = main.myAssetManager.manager.get(main.myAssetManager.font);
+        skin = main.myAssetManager.manager.get("skin/uiskin.json");
 
 //        font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         font.setColor(0.0f, 1.0f, 0.0f, 1.0f);

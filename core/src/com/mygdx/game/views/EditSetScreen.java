@@ -24,23 +24,34 @@ public class EditSetScreen implements Screen {
     private Skin skin;
 
     private Array<String> tempDictionary;
+    private Array<TextField> wordsDictionary;
+
+    private TextButton saveDictionaryButton;
     private Label warningLabel;
-    private TextField wordTextField;
+    private Label warningLabel2;
+    private TextField setName;
 
     public EditSetScreen(LearningGame main) {
         this.main = main;
         stage = new Stage(new ScreenViewport());
-        skin = main.b2dAssetManager.manager.get("skin/uiskin.json");
+        skin = main.myAssetManager.manager.get("skin/uiskin.json");
+        tempDictionary = new Array<String>();
+        wordsDictionary = new Array<TextField>();
+        tempDictionary.add(" 1");
+        tempDictionary.add(" 2");
+        tempDictionary.add(" 3");
+//        tempDictionary.add(" 4");
     }
 
     private Actor createTable() {
         Table table = new Table();
         table.setFillParent(true);
-        table.setDebug(true);
+        table.setDebug(false);
 
-        warningLabel = new Label("", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        warningLabel = new Label("Add words to the set there, minimum three words", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        warningLabel2 = new Label("Not enough words to save set", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
 
-        wordTextField = new TextField("Write words here", skin);
+        setName = new TextField("Set name", skin);
 
         final TextButton addWordButton = new TextButton("Add Word", skin);
         addWordButton.addListener(new ChangeListener() {
@@ -50,7 +61,7 @@ public class EditSetScreen implements Screen {
             }
         });
 
-        final TextButton saveDictionaryButton = new TextButton("Save Dictionary", skin);
+        saveDictionaryButton = new TextButton("Save Dictionary", skin);
         saveDictionaryButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -65,25 +76,42 @@ public class EditSetScreen implements Screen {
             }
         });
 
-        table.add(warningLabel).width(200).height(75);
+        table.add(warningLabel).width(200).height(75).padRight(50);
         table.row();
-        table.add(wordTextField).padRight(10).width(250).height(75);
-        table.add(addWordButton).width(250).height(75);
+        table.add(warningLabel2).width(200).height(25).padRight(50);
         table.row();
-        table.add(saveDictionaryButton).padRight(10).width(250).height(75);
+        table.add(setName).width(400).height(75).padBottom(10);
+        table.row();
+        warningLabel2.setVisible(false);
+        table.row();
+        for (final String word : tempDictionary) {
+            TextField wordTextField = new TextField("Text field " + word, skin);
+            table.add(wordTextField).width(400).height(75).padBottom(10);
+            table.row();
+            wordsDictionary.add(wordTextField);
+        }
+        table.row();
+        table.add(addWordButton).width(250).height(75).padBottom(10);
+        table.row();
+        table.add(saveDictionaryButton).width(250).height(75).padBottom(10);
+        saveDictionaryButton.setVisible(true);
+        table.row();
         table.add(cancelDictionaryButton).width(250).height(75);
         return table;
     }
 
     private void addWordToDictionary() {
-        Gdx.app.log(TAG, wordTextField.getText());
+        for (TextField textField : wordsDictionary) {
+            Gdx.app.log(TAG, textField.getText());
+        }
+
     }
 
     private void saveDictionary() {
     }
 
-//    Use when fewer than three words
-    private void setWarningLabel(String text){
+    //    Use when fewer than three words
+    private void setWarningLabel(String text) {
         warningLabel.setText(text);
     }
 

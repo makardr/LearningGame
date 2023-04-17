@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -21,11 +22,12 @@ public class PreferencesScreen implements Screen {
     private LearningGame main;
     private Stage stage;
     private Skin skin;
+    private TextField livesSetting;
 
     public PreferencesScreen(LearningGame main) {
         this.main = main;
         stage = new Stage(new ScreenViewport());
-        skin = main.b2dAssetManager.manager.get("skin/uiskin.json");
+        skin = main.myAssetManager.manager.get("skin/uiskin.json");
     }
 
     @Override
@@ -38,7 +40,40 @@ public class PreferencesScreen implements Screen {
     private Actor createTable() {
         Table table = new Table();
         table.setFillParent(true);
-        table.setDebug(true);
+        table.setDebug(false);
+
+        Label speedLabel = new Label("Game speed", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        Slider gameSpeedSlider = new Slider(0f, 1f, 0.1f, false, skin);
+        gameSpeedSlider.setValue(0);
+
+        Label livesLabel = new Label("Number of lives", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        livesSetting = new TextField("10", skin);
+
+        final TextButton save_settings = new TextButton("Save settings", skin);
+        save_settings.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+//                SAve settings
+            }
+        });
+
+        final TextButton back = new TextButton("Back", skin);
+        back.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                main.changeScreen(LearningGame.MENU);
+            }
+        });
+
+        table.add(speedLabel).width(200).height(75).padRight(10);
+        table.add(gameSpeedSlider).width(200).height(75);
+        table.row();
+        table.add(livesLabel).width(200).height(75).padRight(10);
+        table.add(livesSetting).width(200).height(75);
+        table.row();
+        table.add(save_settings).width(200).height(75).padTop(10);
+        table.add(back).width(200).height(75).padTop(10);
+
         return table;
     }
     @Override

@@ -67,14 +67,14 @@ public class LoadingScreen implements Screen {
 
     private void loadAssets() {
 //        Load loading
-        main.b2dAssetManager.queueAddLoadingImages();
-        main.b2dAssetManager.manager.finishLoading();
-        atlas = main.b2dAssetManager.manager.get("images/loading.atlas");
+        main.myAssetManager.queueAddLoadingImages();
+        main.myAssetManager.manager.finishLoading();
+        atlas = main.myAssetManager.manager.get("images/loading.atlas");
         loading_circle_grey = atlas.findRegion("loading_circle_grey");
 //        Load game
-        main.b2dAssetManager.queueAddSkin();
-        main.b2dAssetManager.queueAddImages();
-        main.b2dAssetManager.queueAddFonts();
-        main.b2dAssetManager.manager.finishLoading();
+        main.myAssetManager.queueAddSkin();
+        main.myAssetManager.queueAddImages();
+        main.myAssetManager.queueAddFonts();
+        main.myAssetManager.manager.finishLoading();
     }
 }

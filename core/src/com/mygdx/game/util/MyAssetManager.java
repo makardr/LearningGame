@@ -3,17 +3,15 @@ package com.mygdx.game.util;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.SkinLoader;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-public class B2dAssetManager {
+public class MyAssetManager {
     public final AssetManager manager = new AssetManager();
 
-    private final String TAG = "B2dAssetManager";
+    private final String TAG = "MyAssetManager";
 
     // Textures
     public final String libgdxPlaceholder = "badlogic.jpg";

@@ -12,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.LearningGame;
 
@@ -29,7 +28,7 @@ public class GameOverScreen implements Screen {
     public GameOverScreen(LearningGame main) {
         this.main = main;
         stage = new Stage(new ScreenViewport());
-        skin = main.b2dAssetManager.manager.get("skin/uiskin.json");
+        skin = main.myAssetManager.manager.get("skin/uiskin.json");
 
     }
 
@@ -55,7 +54,7 @@ public class GameOverScreen implements Screen {
 
         Table table = new Table();
         table.setFillParent(true);
-        table.setDebug(true);
+        table.setDebug(false);
 
 
 //        Current set name
@@ -90,10 +89,10 @@ public class GameOverScreen implements Screen {
         table.add(timeLabel);
         table.row();
 
-        table.add(playGain).fillX().uniformX().uniformY().width(400).height(150);
+        table.add(playGain).fillX().uniformX().uniformY().width(400).height(150).padBottom(10);
         table.row();
 
-        table.add(returnToMainMenu).fillX().uniformX().uniformY().width(400).height(150);
+        table.add(returnToMainMenu).fillX().uniformX().uniformY().width(400).height(150).padBottom(10);
         table.row();
 
         return table;
