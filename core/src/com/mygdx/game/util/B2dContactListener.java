@@ -26,16 +26,19 @@ public class B2dContactListener implements ContactListener {
 
         if (fa.getBody().getUserData() instanceof Player) {
 //            Gdx.app.log("B2dContactListener", "Contact1");
+//            Gdx.app.log(TAG,((B2dBodyEntity) parent.screen.currentChosenWordEntity).getData());
+//            Gdx.app.log(TAG,((B2dBodyEntity) fb.getBody().getUserData()).getData());
             ((B2dBodyEntity) fb.getBody().getUserData()).destroy();
             parent.player.damage();
+
             return;
         } else if (fb.getBody().getUserData() instanceof Player) {
 //            Gdx.app.log("B2dContactListener", "Contact2");
+
             ((B2dBodyEntity) fb.getBody().getUserData()).destroy();
             parent.player.damage();
             return;
         }
-
     }
 
     @Override

@@ -13,9 +13,11 @@ import com.mygdx.game.util.B2dBodyFactory;
 public class Player extends B2dBodyEntity {
     private final Vector2 resetPosition;
     public int lives;
-    private int defaultLives=1;
+    private int defaultLives=10;
     private boolean setToDestroy;
     private final String TAG = "Player";
+
+    private boolean playerWasDamaged = false;
 
 
 
@@ -41,6 +43,7 @@ public class Player extends B2dBodyEntity {
 
     public void damage() {
         lives -= 1;
+        playerWasDamaged=true;
     }
 
 
@@ -87,5 +90,14 @@ public class Player extends B2dBodyEntity {
 
     public void setDefaultLives(int defaultLives) {
         this.defaultLives = defaultLives;
+    }
+    public boolean wasPlayerDamaged() {
+        if (playerWasDamaged){
+            playerWasDamaged=false;
+            return true;
+        } else {
+            return false;
+        }
+
     }
 }

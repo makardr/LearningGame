@@ -30,7 +30,7 @@ public class Hud implements Disposable {
         Table table = new Table();
         table.top();
         table.setFillParent(true);
-        table.setDebug(true);
+        table.setDebug(false);
         String value = "";
         livesLabel = new Label(value, new com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle(new BitmapFont(), Color.WHITE));
         table.add(livesLabel).expandX().padTop(10);
@@ -42,7 +42,7 @@ public class Hud implements Disposable {
     }
 
     public void updateHud(String newLivesValue, String newTimeValue, String newObjectValue) {
-        livesLabel.setText(newLivesValue);
+        livesLabel.setText("Lives: " + newLivesValue);
         timeLabel.setText(newTimeValue);
         objectLabel.setText(newObjectValue);
     }

@@ -15,7 +15,9 @@ public class MyAssetManager {
 
     // Textures
     public final String libgdxPlaceholder = "badlogic.jpg";
+    public final String player_texture = "images/player_placeholder.png";
     public final String loadingCircle = "images/loading.atlas";
+
     // Sounds
 
     // Music
@@ -26,8 +28,10 @@ public class MyAssetManager {
     public final String font = "font/white_font.fnt";
 
 
+
     public void queueAddImages() {
         manager.load(libgdxPlaceholder, Texture.class);
+        manager.load(player_texture, Texture.class);
         Gdx.app.log(TAG, "Load textures");
     }
 

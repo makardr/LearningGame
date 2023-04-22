@@ -22,7 +22,7 @@ public class B2dModel {
 
 
     private KeyboardController controller;
-    private GameScreen screen;
+    public GameScreen screen;
 
     private SpriteBatch batch;
 
@@ -31,16 +31,19 @@ public class B2dModel {
     public Player player;
 
     private Array<B2dBodyEntity> entities;
+    private Array<Word> words;
+    public float gameSpeed = 1;
 
 
-    public B2dModel(GameScreen screen, OrthographicCamera cam, KeyboardController controller, World world) {
+    public B2dModel(GameScreen screen, OrthographicCamera cam, KeyboardController controller) {
         this.screen = screen;
         this.cam = cam;
         this.controller = controller;
-        this.world = world;
+        world = new World(new Vector2(0, 0f), true);
         world.setContactListener(new B2dContactListener(this));
         batch = screen.getBatch();
         entities = new Array<B2dBodyEntity>();
+        words = new Array<Word>();
         createBodies();
     }
 
@@ -68,14 +71,23 @@ public class B2dModel {
     public void createBodies() {
         player = new Player(world, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, new Vector2(0, 0));
         entities.add(player);
-        Word testWord = new Word(world, Gdx.graphics.getWidth() / 2 - 150, Gdx.graphics.getHeight() / 2, new Vector2(10, 0), "word0");
+
+        Word testWord = new Word(world, Gdx.graphics.getWidth() / 2 - 400, Gdx.graphics.getHeight() / 2, new Vector2(25*gameSpeed, 0), "Test word 1");
         entities.add(testWord);
-        Word testWord2 = new Word(world, Gdx.graphics.getWidth() / 2 + 150, Gdx.graphics.getHeight() / 2, new Vector2(-25, 100), "word2");
-        entities.add(testWord2);
-        Word testWord3 = new Word(world, Gdx.graphics.getWidth() / 2 + 150, Gdx.graphics.getHeight() / 2 + 250, new Vector2(-25, 100), "word2");
-        entities.add(testWord3);
-        Word testWord4 = new Word(world, Gdx.graphics.getWidth() / 2 + 200, Gdx.graphics.getHeight() / 2, new Vector2(-25, 0), "тестÕÜÄ");
-        entities.add(testWord4);
+        words.add(testWord);
+//        Word testWord2 = new Word(world, Gdx.graphics.getWidth() / 2 + 400, Gdx.graphics.getHeight() / 2, new Vector2(-25*gameSpeed, 0), "Test word 2");
+//        entities.add(testWord2);
+//        Word testWord3 = new Word(world, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2 + 500, new Vector2(0, -25*gameSpeed), "Test word 3");
+//        entities.add(testWord3);
+//        Word testWord4 = new Word(world, Gdx.graphics.getWidth() / 2-400, Gdx.graphics.getHeight() / 2 + 500, new Vector2(20*gameSpeed, -30*gameSpeed), "Test word 4");
+//        entities.add(testWord4);
+//        Word testWord5 = new Word(world, Gdx.graphics.getWidth() / 2+400, Gdx.graphics.getHeight() / 2 + 500, new Vector2(-20*gameSpeed, -30*gameSpeed), "Test word 5");
+//        entities.add(testWord5);
+
+        testWord.setActive();
+//        testWord.setInactive();
+//        Word testWord4 = new Word(world, Gdx.graphics.getWidth() / 2 + 200, Gdx.graphics.getHeight() / 2, new Vector2(-25, 0), "тестÕÜÄ");
+//        entities.add(testWord4);
     }
 
     public void updateEntities(float delta) {

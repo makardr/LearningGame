@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -36,6 +35,7 @@ public class GameScreen implements Screen {
     private final OrthographicCamera camera;
     private final SpriteBatch batch;
     private final Texture img;
+    private final Texture player_texture;
     public final Word dummyWord;
     private B2dModel model;
     private final Box2DDebugRenderer renderer;
@@ -43,8 +43,11 @@ public class GameScreen implements Screen {
     private final BitmapFont font;
     private final KeyboardController controller;
     private Viewport viewport;
-    private final World world;
+
+    //    Used to render and update all entities
     private Array<B2dBodyEntity> entities;
+    //    Used to control words
+    private Array<B2dBodyEntity> words;
     private Array<ChooseButton> buttons;
     //    Public
     public Hud hud;
@@ -54,10 +57,11 @@ public class GameScreen implements Screen {
 
     public boolean wordChosenCorrectlyState;
     public boolean wordChosenIncorrectlyState;
-    String[] currentGameArray = {"apple", "banana", "cherry", "date", "elderberry"};
+    String[] currentGameArray = {"Wrong translation 1", "Wrong translation 2", "Wrong translation 3", "Wrong translation 4", " Wrong translation 5"};
 
     private long startTime = System.currentTimeMillis();
     private float currentTime;
+    private float timer;
     private float lastTime;
     private String remainingLives;
 
@@ -73,23 +77,22 @@ public class GameScreen implements Screen {
 
 //        Load assets
         img = main.myAssetManager.manager.get(main.myAssetManager.libgdxPlaceholder);
+        player_texture = main.myAssetManager.manager.get(main.myAssetManager.player_texture);
         font = main.myAssetManager.manager.get(main.myAssetManager.font);
         skin = main.myAssetManager.manager.get("skin/uiskin.json");
 
 //        font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        font.setColor(0.0f, 1.0f, 0.0f, 1.0f);
+        font.setColor(0.0f, 0.0f, 0.0f, 1.0f);
         font.getData().setScale(1f, 1f);
 
         hud = new Hud(batch);
         debugRenderer = new Box2DDebugRenderer(true, true, true, true, true, true);
         renderer = new Box2DDebugRenderer(false, false, false, false, false, false);
 
-        world = new World(new Vector2(0, 0f), true);
-        model = new B2dModel(this, camera, controller, world);
+        model = new B2dModel(this, camera, controller);
         entities = model.getEntities();
-        dummyWord = new Word(world, -100, -100, new Vector2(0, 0), "");
+        dummyWord = new Word(model.world, -100, -100, new Vector2(0, 0), "");
     }
-
 
 
     @Override
@@ -110,19 +113,21 @@ public class GameScreen implements Screen {
         startNewGame();
     }
 
-//    startNewGame When the screen is shown
-    public void startNewGame(){
+    //    startNewGame When the screen is shown
+    public void startNewGame() {
 
         destroyButtons();
         setCurrentWord(dummyWord);
-        currentTime=0;
+        currentTime = 0;
+        timer = 0;
 //        populateGameDictionary();
 
     }
-//    restartGame is to reset data and change screen to main
+
+    //    restartGame is to reset data and change screen to main
     public void restartGame() {
-        lastTime=currentTime;
-        remainingLives=model.player.getLives();
+        lastTime = currentTime;
+        remainingLives = model.player.getLives();
         for (B2dBodyEntity entity : entities) {
 //            Player resets lives in destroy method
             entity.destroy();
@@ -131,8 +136,9 @@ public class GameScreen implements Screen {
         startNewGame();
         main.restartGame();
     }
+
     private void populateGameDictionary(String[] newArray) {
-        currentGameArray=newArray;
+        currentGameArray = newArray;
     }
 
     public void setCurrentWord(Word word) {
@@ -160,13 +166,19 @@ public class GameScreen implements Screen {
         model.logicStep(delta);
         viewport.apply();
         camera.update();
-        hud.updateHud(model.player.getLives(),getCurrentTime(),currentChosenWordEntity.getData());
-        currentTime+=delta;
+        hud.updateHud(model.player.getLives(), getCurrentTime(), currentChosenWordEntity.getData());
+        currentTime += delta;
+
+        timer += delta;
+        if (timer >= 5) {
+            Gdx.app.log(TAG, timer + " triggered");
+            timer = 0;
+        }
+
         gameLogic();
         if (model.player.lives <= 0) {
             restartGame();
         }
-
     }
 
     private void gameLogic() {
@@ -174,21 +186,28 @@ public class GameScreen implements Screen {
             Gdx.app.log(TAG, "wordChosenCorrectlyState true");
             wordChosenCorrectlyState = false;
             currentChosenWordEntity.destroy();
-            currentChosenWordEntity=dummyWord;
-            destroyButtons();
+            resetWord();
         }
         if (wordChosenIncorrectlyState == true) {
             Gdx.app.log(TAG, "wordChosenIncorrectlyState true");
             wordChosenIncorrectlyState = false;
             currentChosenWordEntity.destroy();
             model.player.damage();
-            currentChosenWordEntity=dummyWord;
-            destroyButtons();
+            resetWord();
         }
+//        Fix resetting chosen word with buttons when player is getting any damage.
+        if (model.player.wasPlayerDamaged()) {
+            resetWord();
+        }
+
     }
 
+    private void resetWord() {
+        currentChosenWordEntity = dummyWord;
+        destroyButtons();
+    }
 
-    private void destroyButtons() {
+    public void destroyButtons() {
         for (ChooseButton buttonObj : buttons) {
             buttonObj.destroy();
         }
@@ -199,15 +218,16 @@ public class GameScreen implements Screen {
         batch.begin();
 
         for (B2dBodyEntity entity : entities) {
+//            Draw player
             if (entity.body.getUserData() instanceof Player) {
-                entity.draw(batch, img);
+                entity.draw(batch, player_texture);
             } else if (entity.body.getUserData() instanceof Word) {
                 entity.draw(batch, font);
             }
         }
         batch.end();
         hud.stage.draw();
-        debugRenderer.render(model.world, camera.combined);
+        renderer.render(model.world, camera.combined);
     }
 
     private void updateController() {
@@ -263,15 +283,11 @@ public class GameScreen implements Screen {
         return batch;
     }
 
-    public World getWorld() {
-        return world;
-    }
-
     private Table makeTable() {
         Table table = new Table();
         table.setBounds(viewport.getScreenX(), viewport.getScreenY(), Gdx.graphics.getWidth(), Gdx.graphics.getHeight() / 3);
 //        table.setFillParent(true);
-        table.setDebug(true);
+        table.setDebug(false);
 
 //        Create buttons
         buttons = new Array<ChooseButton>();
@@ -288,7 +304,7 @@ public class GameScreen implements Screen {
         }
 
         for (ChooseButton buttonObj : buttons) {
-            table.add(buttonObj).fillX().uniformX().uniformY().width(Gdx.graphics.getWidth() * 0.8f).height(Gdx.graphics.getHeight() / 8);
+            table.add(buttonObj).fillX().uniformX().uniformY().width(Gdx.graphics.getWidth() * 0.8f).height(Gdx.graphics.getHeight() / 8).padBottom(5);
             buttonObj.activate("тест");
             table.row();
         }
@@ -297,10 +313,10 @@ public class GameScreen implements Screen {
 
     public void showButtons(String wordData) {
         String[] threeArray = createArray(wordData, currentGameArray);
-        int i=0;
+        int i = 0;
         for (ChooseButton buttonObj : buttons) {
             buttonObj.activate(threeArray[i]);
-            i+=1;
+            i += 1;
         }
     }
 
@@ -317,6 +333,7 @@ public class GameScreen implements Screen {
         newArray[2] = inputArray[randomIndex2];
         return shuffleArray(newArray);
     }
+
     public static String[] shuffleArray(String[] array) {
         Random rand = new Random();
         for (int i = array.length - 1; i > 0; i--) {
@@ -327,25 +344,30 @@ public class GameScreen implements Screen {
         }
         return array;
     }
+
     public String getCurrentTime() {
-        float minutes = (float)Math.floor(currentTime / 60.0f);
+        float minutes = (float) Math.floor(currentTime / 60.0f);
         float seconds = currentTime - minutes * 60.0f;
         return String.format("%.0fm%.0fs", minutes, seconds);
     }
+
     public String getCurrentTimeDt() {
-        float minutes = (float)Math.floor(currentTime / 60.0f);
+        float minutes = (float) Math.floor(currentTime / 60.0f);
         float seconds = currentTime - minutes * 60.0f;
         return String.format("%.0fm%.0fs", minutes, seconds);
     }
+
     public String getLastTime() {
-        float minutes = (float)Math.floor(lastTime / 60.0f);
+        float minutes = (float) Math.floor(lastTime / 60.0f);
         float seconds = lastTime - minutes * 60.0f;
         return String.format("%.0fm%.0fs", minutes, seconds);
     }
+
     public float getLastTimeDt() {
         return lastTime;
     }
-    public String getCurrentLives(){
+
+    public String getCurrentLives() {
         return model.player.getLives();
     }
 

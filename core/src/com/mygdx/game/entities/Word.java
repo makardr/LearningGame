@@ -24,7 +24,7 @@ public class Word extends B2dBodyEntity {
         this.currentText=currentText;
         setToDestroy = false;
         resetPosition = new Vector2(body.getPosition().x, body.getPosition().y);
-        active=true;
+        active=false;
     }
 
     @Override
@@ -33,6 +33,8 @@ public class Word extends B2dBodyEntity {
             if (setToDestroy) {
                 body.setTransform(resetPosition, body.getAngle());
                 setToDestroy = false;
+                setInactive();
+                body.setLinearVelocity(0,0);
             } else {
                 body.setLinearVelocity(velocity);
             }
