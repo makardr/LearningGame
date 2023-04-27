@@ -52,6 +52,7 @@ public class EditSetScreen implements Screen {
         warningLabel2 = new Label("Not enough words to save set", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
 
         setName = new TextField("Set name", skin);
+        setName.setMessageText("Set name 2");
 
         final TextButton addWordButton = new TextButton("Add Word", skin);
         addWordButton.addListener(new ChangeListener() {
@@ -61,14 +62,14 @@ public class EditSetScreen implements Screen {
             }
         });
 
-        saveDictionaryButton = new TextButton("Save Dictionary", skin);
+        saveDictionaryButton = new TextButton("Save", skin);
         saveDictionaryButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 saveDictionary();
             }
         });
-        final TextButton cancelDictionaryButton = new TextButton("Cancel Dictionary", skin);
+        final TextButton cancelDictionaryButton = new TextButton("Back", skin);
         cancelDictionaryButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {

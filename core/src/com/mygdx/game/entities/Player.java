@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.util.B2dBodyFactory;
+import com.mygdx.game.util.MyTuple;
 
 public class Player extends B2dBodyEntity {
     private final Vector2 resetPosition;
@@ -71,19 +72,10 @@ public class Player extends B2dBodyEntity {
     }
 
     @Override
-    public String getData() {
+    public MyTuple getData() {
         return null;
     }
 
-    @Override
-    public void setActive() {
-
-    }
-
-    @Override
-    public void setInactive() {
-
-    }
     public String getLives(){
         return Integer.toString(lives);
     }

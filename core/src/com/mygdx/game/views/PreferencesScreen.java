@@ -28,6 +28,7 @@ public class PreferencesScreen implements Screen {
         this.main = main;
         stage = new Stage(new ScreenViewport());
         skin = main.myAssetManager.manager.get("skin/uiskin.json");
+
     }
 
     @Override
@@ -42,18 +43,22 @@ public class PreferencesScreen implements Screen {
         table.setFillParent(true);
         table.setDebug(false);
 
-        Label speedLabel = new Label("Game speed", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        BitmapFont font = new BitmapFont();
+
+        Label speedLabel = new Label("Game speed", new Label.LabelStyle(font, Color.WHITE));
         Slider gameSpeedSlider = new Slider(0f, 1f, 0.1f, false, skin);
         gameSpeedSlider.setValue(0);
 
-        Label livesLabel = new Label("Number of lives", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        Label livesLabel = new Label("Number of lives", new Label.LabelStyle(font, Color.WHITE));
         livesSetting = new TextField("10", skin);
 
-        final TextButton save_settings = new TextButton("Save settings", skin);
+
+
+        final TextButton save_settings = new TextButton("Save", skin);
         save_settings.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-//                SAve settings
+//                Save settings
             }
         });
 

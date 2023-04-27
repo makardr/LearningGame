@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -26,6 +27,7 @@ import com.mygdx.game.entities.Word;
 import com.mygdx.game.hud.Hud;
 import com.mygdx.game.model.B2dModel;
 import com.mygdx.game.util.KeyboardController;
+import com.mygdx.game.util.MyTuple;
 
 import java.util.Random;
 
@@ -47,8 +49,11 @@ public class GameScreen implements Screen {
     //    Used to render and update all entities
     private Array<B2dBodyEntity> entities;
     //    Used to control words
-    private Array<B2dBodyEntity> words;
+    private Array<Word> words;
     private Array<ChooseButton> buttons;
+    private Array<MyTuple> currentWordSetArray;
+    private Array<MyTuple> arrayForTranslations;
+
     //    Public
     public Hud hud;
     private Stage stage;
@@ -57,13 +62,15 @@ public class GameScreen implements Screen {
 
     public boolean wordChosenCorrectlyState;
     public boolean wordChosenIncorrectlyState;
-    String[] currentGameArray = {"Wrong translation 1", "Wrong translation 2", "Wrong translation 3", "Wrong translation 4", " Wrong translation 5"};
-
-    private long startTime = System.currentTimeMillis();
     private float currentTime;
     private float timer;
     private float lastTime;
+
+    private boolean allWordsCleared;
+    //    Settings
+//    Used to tell GameOver screen how many lives were left
     private String remainingLives;
+    private int launchWordTimerSetting = 1;
 
     public GameScreen(LearningGame main) {
         this.main = main;
@@ -90,15 +97,23 @@ public class GameScreen implements Screen {
         renderer = new Box2DDebugRenderer(false, false, false, false, false, false);
 
         model = new B2dModel(this, camera, controller);
-        entities = model.getEntities();
-        dummyWord = new Word(model.world, -100, -100, new Vector2(0, 0), "");
+
+        dummyWord = new Word(model.world, -100, -100, new Vector2(0, 0), new MyTuple("", ""));
+
     }
 
+    private void makeArrays() {
+        entities = model.getEntities();
+        words = model.getWords();
+        arrayForTranslations = new Array<>();
+        currentWordSetArray = new Array<>(new MyTuple[]{new MyTuple("Karu1", "Медведь1"), new MyTuple("Kevad2", "Весна2"), new MyTuple("Suvi3", "Лето3"), new MyTuple("Sügis4", "Осень4"), new MyTuple("Talv5", "Зима5"), new MyTuple("Talv6", "Зима6"), new MyTuple("Talv7", "Зима7")});
+        arrayForTranslations.addAll(currentWordSetArray);
+    }
 
     @Override
     public void show() {
         Gdx.app.log(TAG, "Screen shown");
-        Gdx.app.log(TAG, "Screen is active" + this.toString());
+        Gdx.app.log(TAG, "Screen is active " + this.toString());
         InputMultiplexer multiplexer = new InputMultiplexer();
         Gdx.input.setInputProcessor(multiplexer);
         multiplexer.addProcessor(controller);
@@ -115,13 +130,12 @@ public class GameScreen implements Screen {
 
     //    startNewGame When the screen is shown
     public void startNewGame() {
-
         destroyButtons();
         setCurrentWord(dummyWord);
+        makeArrays();
         currentTime = 0;
         timer = 0;
-//        populateGameDictionary();
-
+        allWordsCleared = false;
     }
 
     //    restartGame is to reset data and change screen to main
@@ -132,21 +146,17 @@ public class GameScreen implements Screen {
 //            Player resets lives in destroy method
             entity.destroy();
         }
-
         startNewGame();
         main.restartGame();
     }
 
-    private void populateGameDictionary(String[] newArray) {
-        currentGameArray = newArray;
-    }
 
     public void setCurrentWord(Word word) {
         this.currentChosenWordEntity = word;
     }
 
     public String getCurrentWord() {
-        return currentChosenWordEntity.getData();
+        return currentChosenWordEntity.getWord();
     }
 
     @Override
@@ -166,22 +176,11 @@ public class GameScreen implements Screen {
         model.logicStep(delta);
         viewport.apply();
         camera.update();
-        hud.updateHud(model.player.getLives(), getCurrentTime(), currentChosenWordEntity.getData());
-        currentTime += delta;
-
-        timer += delta;
-        if (timer >= 5) {
-            Gdx.app.log(TAG, timer + " triggered");
-            timer = 0;
-        }
-
-        gameLogic();
-        if (model.player.lives <= 0) {
-            restartGame();
-        }
+        hud.updateHud(model.player.getLives(), getCurrentTime(), currentChosenWordEntity.getWord());
+        gameLogic(delta);
     }
 
-    private void gameLogic() {
+    private void gameLogic(float delta) {
         if (wordChosenCorrectlyState == true) {
             Gdx.app.log(TAG, "wordChosenCorrectlyState true");
             wordChosenCorrectlyState = false;
@@ -195,11 +194,52 @@ public class GameScreen implements Screen {
             model.player.damage();
             resetWord();
         }
-//        Fix resetting chosen word with buttons when player is getting any damage.
+//        Fix resetting chosen word with buttons when player is getting ANY damage.
         if (model.player.wasPlayerDamaged()) {
             resetWord();
         }
 
+//        currentTime if for overall elapsed time
+        currentTime += delta;
+
+//        Timer which triggers every 5 seconds to launch words
+        timer += delta;
+        if (currentWordSetArray.size > 0) {
+            if (timer >= launchWordTimerSetting) {
+                chooseWord();
+                timer = 0;
+            }
+        }
+//        Check all words and check if any of them are active
+        allWordsCleared = true;
+        for (Word word : words) {
+            if (word.active) {
+//                Gdx.app.log(TAG, "All words cleared");
+                allWordsCleared = false;
+            }
+        }
+
+        if (currentWordSetArray.size == 0 && allWordsCleared) {
+            allWordsCleared = false;
+            restartGame();
+        }
+        if (model.player.lives <= 0) {
+            restartGame();
+        }
+    }
+
+    public void chooseWord() {
+        Random random = new Random();
+        int randintWord = random.nextInt(words.size);
+        int randintWordSet = random.nextInt(currentWordSetArray.size);
+        Word word = words.get(randintWord);
+        if (!word.active) {
+            word.setActive(currentWordSetArray.get(randintWordSet));
+            currentWordSetArray.removeIndex(randintWordSet);
+            Gdx.app.log(TAG, currentWordSetArray.toString());
+        } else {
+
+        }
     }
 
     private void resetWord() {
@@ -311,8 +351,9 @@ public class GameScreen implements Screen {
         return table;
     }
 
-    public void showButtons(String wordData) {
-        String[] threeArray = createArray(wordData, currentGameArray);
+
+    public void showButtons(String translatedWord) {
+        String[] threeArray = createButtonArray(translatedWord, arrayForTranslations);
         int i = 0;
         for (ChooseButton buttonObj : buttons) {
             buttonObj.activate(threeArray[i]);
@@ -320,18 +361,32 @@ public class GameScreen implements Screen {
         }
     }
 
-    public static String[] createArray(String passedString, String[] inputArray) {
+    public static String[] createButtonArray(String passedString, Array<MyTuple> inputArray) {
+        Gdx.app.log("Create Array", inputArray.toString());
         String[] newArray = new String[3];
         newArray[0] = passedString;
         Random rand = new Random();
-        int randomIndex1 = rand.nextInt(inputArray.length);
-        int randomIndex2 = rand.nextInt(inputArray.length);
+        int randomIndex1 = rand.nextInt(inputArray.size);
+        int randomIndex2 = rand.nextInt(inputArray.size);
         while (randomIndex2 == randomIndex1) {
-            randomIndex2 = rand.nextInt(inputArray.length);
+            randomIndex2 = rand.nextInt(inputArray.size);
         }
-        newArray[1] = inputArray[randomIndex1];
-        newArray[2] = inputArray[randomIndex2];
-        return shuffleArray(newArray);
+
+        newArray[1] = inputArray.get(randomIndex1).getSecondValue();
+        newArray[2] = inputArray.get(randomIndex2).getSecondValue();
+
+        newArray = shuffleArray(newArray);
+
+        // Check for duplicates
+        for (int i = 0; i < newArray.length; i++) {
+            for (int j = i + 1; j < newArray.length; j++) {
+                if (newArray[i].equals(newArray[j])) {
+                    // Duplicate found, generate a new random array
+                    return createButtonArray(passedString, inputArray);
+                }
+            }
+        }
+        return newArray;
     }
 
     public static String[] shuffleArray(String[] array) {
@@ -371,7 +426,7 @@ public class GameScreen implements Screen {
         return model.player.getLives();
     }
 
-//    public void setCurrentTime(String currentTime) {
-//        this.currentTime = currentTime;
-//    }
+    public Array<MyTuple> getCurrentWordSetArray() {
+        return currentWordSetArray;
+    }
 }

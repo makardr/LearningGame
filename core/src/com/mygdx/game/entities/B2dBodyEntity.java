@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.game.util.MyTuple;
 
 public abstract class B2dBodyEntity extends Sprite {
     public Body body;
@@ -34,8 +35,6 @@ public abstract class B2dBodyEntity extends Sprite {
     public abstract void draw(Batch batch, Texture texture);
 
     public abstract void draw(Batch batch, BitmapFont font);
-    public abstract String getData();
-    public abstract void setActive();
-    public abstract void setInactive();
+    public abstract MyTuple getData();
 
 }

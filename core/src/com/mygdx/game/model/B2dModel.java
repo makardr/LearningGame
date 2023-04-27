@@ -13,6 +13,7 @@ import com.mygdx.game.entities.Player;
 import com.mygdx.game.entities.Word;
 import com.mygdx.game.util.B2dContactListener;
 import com.mygdx.game.util.KeyboardController;
+import com.mygdx.game.util.MyTuple;
 import com.mygdx.game.views.GameScreen;
 
 
@@ -56,8 +57,10 @@ public class B2dModel {
             if (entity.body.getUserData() instanceof Word) {
                 if (screen.currentChosenWordEntity.equals(screen.dummyWord)) {
                     if (controller.isMouse1Down && pointIntersectsBody(entity.body, controller.mouseLocation)) {
+//                        Set current  entity word
                         screen.setCurrentWord((Word) entity);
-                        screen.showButtons(entity.getData());
+//                        Show buttons, getWord is word that is being translated
+                        screen.showButtons(((Word) entity).getTranslation());
                     }
                 }
             }
@@ -72,19 +75,29 @@ public class B2dModel {
         player = new Player(world, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, new Vector2(0, 0));
         entities.add(player);
 
-        Word testWord = new Word(world, Gdx.graphics.getWidth() / 2 - 400, Gdx.graphics.getHeight() / 2, new Vector2(25*gameSpeed, 0), "Test word 1");
+
+        Word testWord = new Word(world, Gdx.graphics.getWidth() / 2 - 400, Gdx.graphics.getHeight() / 2, new Vector2(25*gameSpeed, 0), new MyTuple("",""));
         entities.add(testWord);
         words.add(testWord);
-//        Word testWord2 = new Word(world, Gdx.graphics.getWidth() / 2 + 400, Gdx.graphics.getHeight() / 2, new Vector2(-25*gameSpeed, 0), "Test word 2");
-//        entities.add(testWord2);
-//        Word testWord3 = new Word(world, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2 + 500, new Vector2(0, -25*gameSpeed), "Test word 3");
-//        entities.add(testWord3);
-//        Word testWord4 = new Word(world, Gdx.graphics.getWidth() / 2-400, Gdx.graphics.getHeight() / 2 + 500, new Vector2(20*gameSpeed, -30*gameSpeed), "Test word 4");
-//        entities.add(testWord4);
-//        Word testWord5 = new Word(world, Gdx.graphics.getWidth() / 2+400, Gdx.graphics.getHeight() / 2 + 500, new Vector2(-20*gameSpeed, -30*gameSpeed), "Test word 5");
-//        entities.add(testWord5);
+        Word testWord2 = new Word(world, Gdx.graphics.getWidth() / 2 + 400, Gdx.graphics.getHeight() / 2, new Vector2(-25*gameSpeed, 0), new MyTuple("",""));
+        entities.add(testWord2);
+        words.add(testWord2);
+        Word testWord3 = new Word(world, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2 + 500, new Vector2(0, -25*gameSpeed), new MyTuple("",""));
+        entities.add(testWord3);
+        words.add(testWord3);
+        Word testWord4 = new Word(world, Gdx.graphics.getWidth() / 2-400, Gdx.graphics.getHeight() / 2 + 500, new Vector2(20*gameSpeed, -30*gameSpeed), new MyTuple("",""));
+        entities.add(testWord4);
+        words.add(testWord4);
+        Word testWord5 = new Word(world, Gdx.graphics.getWidth() / 2+400, Gdx.graphics.getHeight() / 2 + 500, new Vector2(-20*gameSpeed, -30*gameSpeed), new MyTuple("",""));
+        entities.add(testWord5);
+        words.add(testWord5);
 
-        testWord.setActive();
+//        testWord.setActive();
+//        testWord2.setActive();
+//        testWord3.setActive();
+//        testWord4.setActive();
+//        testWord5.setActive();
+
 //        testWord.setInactive();
 //        Word testWord4 = new Word(world, Gdx.graphics.getWidth() / 2 + 200, Gdx.graphics.getHeight() / 2, new Vector2(-25, 0), "тестÕÜÄ");
 //        entities.add(testWord4);
@@ -111,4 +124,8 @@ public class B2dModel {
             return false;
         }
     }
+    public Array<Word> getWords() {
+        return words;
+    }
+
 }

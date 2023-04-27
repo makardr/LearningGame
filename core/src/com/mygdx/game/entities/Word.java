@@ -9,19 +9,19 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.util.B2dBodyFactory;
+import com.mygdx.game.util.MyTuple;
 
 public class Word extends B2dBodyEntity {
     private boolean setToDestroy;
     private boolean destroyed;
     private final String TAG = "Word";
     private Vector2 resetPosition;
-    private String currentText;
-    private String[] currentTranslation;
+    private MyTuple dataSet;
 
-    public Word(World world, int positionX, int positionY, Vector2 velocity,String currentText) {
+    public Word(World world, int positionX, int positionY, Vector2 velocity,MyTuple dataSet) {
         super(world, positionX, positionY, velocity);
         this.body = defineEntity();
-        this.currentText=currentText;
+        this.dataSet=dataSet;
         setToDestroy = false;
         resetPosition = new Vector2(body.getPosition().x, body.getPosition().y);
         active=false;
@@ -45,15 +45,13 @@ public class Word extends B2dBodyEntity {
     protected Body defineEntity() {
         B2dBodyFactory bodyFactory = B2dBodyFactory.getInstance(world);
         body = bodyFactory.makeCirclePolyBody(positionX, positionY, 100, B2dBodyFactory.STEEL, true, BodyDef.BodyType.DynamicBody);
-//        body.setUserData("WORDBODY");
+//        Not related to MyTuple dataSet
         body.setUserData(this);
-//        if (body.getUserData() instanceof Word){
-//
-//        }
         return body;
     }
 
     public void destroy() {
+        dataSet=new MyTuple("","");
         setToDestroy = true;
     }
 
@@ -65,23 +63,29 @@ public class Word extends B2dBodyEntity {
 
     @Override
     public void draw(Batch batch, BitmapFont font) {
-        font.draw(batch, getData(), body.getPosition().x - 25, body.getPosition().y + 12.5f);
-    }
-    public void setCurrentText(String currentText) {
-        this.currentText = currentText;
+        font.draw(batch, getWord(), body.getPosition().x - 25, body.getPosition().y + 12.5f);
     }
 
     @Override
-    public String getData() {
-        return currentText;
+    public MyTuple getData() {
+        return dataSet;
+    }
+    public void setData(MyTuple dataSet) {
+        this.dataSet = dataSet;
     }
 
-    @Override
-    public void setActive() {
+    public String getWord(){
+        return dataSet.getFirstValue();
+    }
+    public String getTranslation(){
+        return dataSet.getSecondValue();
+    }
+
+    public void setActive(MyTuple data) {
+        Gdx.app.log(TAG, "Word activated: "+data.getFirstValue());
+        setData(data);
         active=true;
     }
-
-    @Override
     public void setInactive() {
         active=false;
     }

@@ -31,6 +31,7 @@ public class MenuScreen implements Screen {
         skin = main.myAssetManager.manager.get("skin/uiskin.json");
 
         TextButton newGame = new TextButton("Start Game", skin);
+
         newGame.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {

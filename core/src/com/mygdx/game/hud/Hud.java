@@ -30,13 +30,16 @@ public class Hud implements Disposable {
         Table table = new Table();
         table.top();
         table.setFillParent(true);
-        table.setDebug(false);
+        table.setDebug(true);
         String value = "";
-        livesLabel = new Label(value, new com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle(new BitmapFont(), Color.WHITE));
+
+        BitmapFont bitmapFont = new BitmapFont();
+
+        livesLabel = new Label(value, new com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle(bitmapFont, Color.BLACK));
         table.add(livesLabel).expandX().padTop(10);
-        timeLabel = new Label(value, new com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        timeLabel = new Label(value, new com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle(bitmapFont, Color.BLACK));
         table.add(timeLabel).expandX().padTop(10);
-        objectLabel = new Label(value, new com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        objectLabel = new Label(value, new com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle(bitmapFont, Color.BLACK));
         table.add(objectLabel).expandX().padTop(10);
         stage.addActor(table);
     }
