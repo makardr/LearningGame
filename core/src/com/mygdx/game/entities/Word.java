@@ -17,28 +17,33 @@ public class Word extends B2dBodyEntity {
     private final String TAG = "Word";
     private Vector2 resetPosition;
     private MyTuple dataSet;
+    public int id;
 
-    public Word(World world, int positionX, int positionY, Vector2 velocity,MyTuple dataSet) {
+    public Word(World world, int positionX, int positionY, Vector2 velocity, MyTuple dataSet, int id) {
         super(world, positionX, positionY, velocity);
         this.body = defineEntity();
-        this.dataSet=dataSet;
+        this.dataSet = dataSet;
+        this.id = id;
         setToDestroy = false;
         resetPosition = new Vector2(body.getPosition().x, body.getPosition().y);
-        active=false;
+        active = false;
     }
 
     @Override
     public void update(float dt) {
-        if (active) {
-            if (setToDestroy) {
-                body.setTransform(resetPosition, body.getAngle());
-                setToDestroy = false;
-                setInactive();
-                body.setLinearVelocity(0,0);
-            } else {
+        if (!setToDestroy){
+            if (active) {
                 body.setLinearVelocity(velocity);
             }
+        } else {
+            Gdx.app.log(TAG, "Word " + id + " set to be destroyed: " + dataSet.getFirstValue());
+            body.setTransform(resetPosition, body.getAngle());
+            body.setLinearVelocity(0, 0);
+            setInactive();
+            dataSet = new MyTuple("", "");
+            setToDestroy = false;
         }
+
     }
 
     @Override
@@ -51,7 +56,6 @@ public class Word extends B2dBodyEntity {
     }
 
     public void destroy() {
-        dataSet=new MyTuple("","");
         setToDestroy = true;
     }
 
@@ -70,23 +74,26 @@ public class Word extends B2dBodyEntity {
     public MyTuple getData() {
         return dataSet;
     }
+
     public void setData(MyTuple dataSet) {
         this.dataSet = dataSet;
     }
 
-    public String getWord(){
+    public String getWord() {
         return dataSet.getFirstValue();
     }
-    public String getTranslation(){
+
+    public String getTranslation() {
         return dataSet.getSecondValue();
     }
 
     public void setActive(MyTuple data) {
-        Gdx.app.log(TAG, "Word activated: "+data.getFirstValue());
         setData(data);
-        active=true;
+        active = true;
+        Gdx.app.log(TAG, "Word " + id + " activated: " + dataSet.getFirstValue());
     }
+
     public void setInactive() {
-        active=false;
+        active = false;
     }
 }

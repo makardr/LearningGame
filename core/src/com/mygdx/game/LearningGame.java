@@ -3,6 +3,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.mygdx.game.util.AppPreferences;
 import com.mygdx.game.util.MyAssetManager;
 import com.mygdx.game.views.GameOverScreen;
 import com.mygdx.game.views.GameScreen;
@@ -31,9 +32,8 @@ public class LearningGame extends Game {
     public final static int CHOOSESET = 5;
     public final static int EDITSET = 6;
 
-
-
     public MyAssetManager myAssetManager = new MyAssetManager();
+    private AppPreferences preferences = new AppPreferences();
 
 
     @Override
@@ -75,15 +75,16 @@ public class LearningGame extends Game {
         }
     }
 
-    public void restartGame() {
-        try {
-            changeScreen(ENDGAME);
-        } catch (Exception e){
-            Gdx.app.error(TAG, "e.getMessage()");
-            Gdx.app.error(TAG, e.getMessage());
-        }
-
-    }
+//    public void restartGame() {
+//        try {
+//            changeScreen(ENDGAME);
+//            gameScreen.restartGame();
+//        } catch (Exception e){
+//            Gdx.app.error(TAG, "e.getMessage()");
+//            Gdx.app.error(TAG, e.getMessage());
+//        }
+//
+//    }
 
     public String getTime(){
         return gameScreen.getLastTime();
@@ -104,6 +105,10 @@ public class LearningGame extends Game {
 
     public void setCurrentSet(String currentSet) {
         this.currentSet = currentSet;
+    }
+
+    public AppPreferences getPreferences() {
+        return this.preferences;
     }
 
 }

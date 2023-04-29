@@ -33,12 +33,12 @@ import java.util.Random;
 
 public class GameScreen implements Screen {
     private final String TAG = "GameScreen";
-    private final LearningGame main;
+    public final LearningGame main;
     private final OrthographicCamera camera;
     private final SpriteBatch batch;
     private final Texture img;
     private final Texture player_texture;
-    public final Word dummyWord;
+    public Word dummyWord;
     private B2dModel model;
     private final Box2DDebugRenderer renderer;
     private final Box2DDebugRenderer debugRenderer;
@@ -68,9 +68,7 @@ public class GameScreen implements Screen {
 
     private boolean allWordsCleared;
     //    Settings
-//    Used to tell GameOver screen how many lives were left
-    private String remainingLives;
-    private int launchWordTimerSetting = 1;
+    private int launchWordTimerSetting;
 
     public GameScreen(LearningGame main) {
         this.main = main;
@@ -91,14 +89,32 @@ public class GameScreen implements Screen {
 //        font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         font.setColor(0.0f, 0.0f, 0.0f, 1.0f);
         font.getData().setScale(1f, 1f);
-
-        hud = new Hud(batch);
+        model = new B2dModel(this, camera, controller);
+        dummyWord = new Word(model.world, -100, -100, new Vector2(0, 0), new MyTuple("", ""), 10);
+        hud = new Hud(batch, main, this);
         debugRenderer = new Box2DDebugRenderer(true, true, true, true, true, true);
         renderer = new Box2DDebugRenderer(false, false, false, false, false, false);
 
-        model = new B2dModel(this, camera, controller);
+    }
 
-        dummyWord = new Word(model.world, -100, -100, new Vector2(0, 0), new MyTuple("", ""));
+
+    @Override
+    public void show() {
+        Gdx.app.log(TAG, "Screen shown");
+        Gdx.app.log(TAG, "Screen is active " + this.toString());
+
+        InputMultiplexer multiplexer = new InputMultiplexer();
+        Gdx.input.setInputProcessor(multiplexer);
+        multiplexer.addProcessor(controller);
+        multiplexer.addProcessor(stage);
+        multiplexer.addProcessor(hud.stage);
+
+        Gdx.app.log(TAG, Gdx.graphics.getWidth() + " " + Gdx.graphics.getHeight());
+
+        Table table = makeTable();
+
+        stage.addActor(table);
+        startNewGame();
 
     }
 
@@ -106,48 +122,39 @@ public class GameScreen implements Screen {
         entities = model.getEntities();
         words = model.getWords();
         arrayForTranslations = new Array<>();
-        currentWordSetArray = new Array<>(new MyTuple[]{new MyTuple("Karu1", "Медведь1"), new MyTuple("Kevad2", "Весна2"), new MyTuple("Suvi3", "Лето3"), new MyTuple("Sügis4", "Осень4"), new MyTuple("Talv5", "Зима5"), new MyTuple("Talv6", "Зима6"), new MyTuple("Talv7", "Зима7")});
+        currentWordSetArray = main.getPreferences().getMyTupleArray();
         arrayForTranslations.addAll(currentWordSetArray);
-    }
-
-    @Override
-    public void show() {
-        Gdx.app.log(TAG, "Screen shown");
-        Gdx.app.log(TAG, "Screen is active " + this.toString());
-        InputMultiplexer multiplexer = new InputMultiplexer();
-        Gdx.input.setInputProcessor(multiplexer);
-        multiplexer.addProcessor(controller);
-        multiplexer.addProcessor(stage);
-
-        Gdx.app.log(TAG, Gdx.graphics.getWidth() + " " + Gdx.graphics.getHeight());
-
-        Table table = makeTable();
-
-        stage.addActor(table);
-
-        startNewGame();
     }
 
     //    startNewGame When the screen is shown
     public void startNewGame() {
+        Gdx.app.log(TAG, "Game is started");
         destroyButtons();
         setCurrentWord(dummyWord);
         makeArrays();
+        model.gameStart();
         currentTime = 0;
         timer = 0;
         allWordsCleared = false;
+//        Apply settings
+        launchWordTimerSetting = main.getPreferences().getSpawnTimer();
     }
 
     //    restartGame is to reset data and change screen to main
-    public void restartGame() {
+//    public void restartGame() {
+//        Gdx.app.log(TAG,"Game is restarted");
+//        for (B2dBodyEntity entity : entities) {
+//            entity.destroy();
+//        }
+//        startNewGame();
+//    }
+    public void gameOver() {
+        Gdx.app.log(TAG, "Game over");
         lastTime = currentTime;
-        remainingLives = model.player.getLives();
         for (B2dBodyEntity entity : entities) {
-//            Player resets lives in destroy method
             entity.destroy();
         }
-        startNewGame();
-        main.restartGame();
+        main.changeScreen(LearningGame.ENDGAME);
     }
 
 
@@ -176,7 +183,7 @@ public class GameScreen implements Screen {
         model.logicStep(delta);
         viewport.apply();
         camera.update();
-        hud.updateHud(model.player.getLives(), getCurrentTime(), currentChosenWordEntity.getWord());
+        hud.updateHud(model.getLives(), getCurrentTime(), currentChosenWordEntity.getWord());
         gameLogic(delta);
     }
 
@@ -209,6 +216,7 @@ public class GameScreen implements Screen {
                 chooseWord();
                 timer = 0;
             }
+
         }
 //        Check all words and check if any of them are active
         allWordsCleared = true;
@@ -219,12 +227,19 @@ public class GameScreen implements Screen {
             }
         }
 
+//        Gdx.app.log(TAG, "Currently active words: ");
+//        for (Word wordObj : words){
+//            if (wordObj.active){
+//                Gdx.app.log(TAG,wordObj.id+" "+wordObj.getWord());
+//            }
+//        }
+
         if (currentWordSetArray.size == 0 && allWordsCleared) {
             allWordsCleared = false;
-            restartGame();
+            gameOver();
         }
-        if (model.player.lives <= 0) {
-            restartGame();
+        if (model.lives <= 0) {
+            gameOver();
         }
     }
 
@@ -233,13 +248,16 @@ public class GameScreen implements Screen {
         int randintWord = random.nextInt(words.size);
         int randintWordSet = random.nextInt(currentWordSetArray.size);
         Word word = words.get(randintWord);
+//        Gdx.app.log(TAG, "Word chose start for word "+word.id+" {");
         if (!word.active) {
             word.setActive(currentWordSetArray.get(randintWordSet));
             currentWordSetArray.removeIndex(randintWordSet);
+//            Gdx.app.log(TAG,"Word "+word.getWord()+" activated");
             Gdx.app.log(TAG, currentWordSetArray.toString());
         } else {
-
+//            Gdx.app.log(TAG,"Word "+word.getWord()+" skipped");
         }
+//        Gdx.app.log(TAG, "} Word chose end for word "+word.id);
     }
 
     private void resetWord() {
@@ -267,7 +285,7 @@ public class GameScreen implements Screen {
         }
         batch.end();
         hud.stage.draw();
-        renderer.render(model.world, camera.combined);
+        debugRenderer.render(model.world, camera.combined);
     }
 
     private void updateController() {
@@ -423,7 +441,7 @@ public class GameScreen implements Screen {
     }
 
     public String getCurrentLives() {
-        return model.player.getLives();
+        return model.getLives();
     }
 
     public Array<MyTuple> getCurrentWordSetArray() {

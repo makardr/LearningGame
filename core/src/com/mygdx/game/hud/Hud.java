@@ -1,30 +1,41 @@
 package com.mygdx.game.hud;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.LearningGame;
+import com.mygdx.game.views.GameScreen;
 
-public class Hud implements Disposable {
+public class Hud implements Disposable{
+    private final GameScreen screen;
     public Stage stage;
     private Viewport viewport;
     //    Widgets
     private Label livesLabel;
     private final Label objectLabel;
     private final Label timeLabel;
-
-    public Hud(SpriteBatch spriteBatch) {
+    private LearningGame main;
+    private Skin skin;
+    public Hud(SpriteBatch spriteBatch, final LearningGame main, final GameScreen screen) {
+        this.main=main;
+        this.screen=screen;
+        this.skin=main.myAssetManager.manager.get(main.myAssetManager.skin);
         viewport = new ScreenViewport(new OrthographicCamera());
         stage = new Stage(viewport, spriteBatch);
         Table table = new Table();
@@ -33,6 +44,14 @@ public class Hud implements Disposable {
         table.setDebug(true);
         String value = "";
 
+        final TextButton back = new TextButton("Back", skin);
+        back.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                main.changeScreen(LearningGame.ENDGAME);
+                screen.gameOver();
+            }
+        });
         BitmapFont bitmapFont = new BitmapFont();
 
         livesLabel = new Label(value, new com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle(bitmapFont, Color.BLACK));
@@ -41,6 +60,8 @@ public class Hud implements Disposable {
         table.add(timeLabel).expandX().padTop(10);
         objectLabel = new Label(value, new com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle(bitmapFont, Color.BLACK));
         table.add(objectLabel).expandX().padTop(10);
+        table.add(back);
+
         stage.addActor(table);
     }
 

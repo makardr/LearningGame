@@ -8,13 +8,13 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.game.model.B2dModel;
 import com.mygdx.game.util.B2dBodyFactory;
 import com.mygdx.game.util.MyTuple;
 
 public class Player extends B2dBodyEntity {
     private final Vector2 resetPosition;
-    public int lives;
-    private int defaultLives=10;
+    private final B2dModel model;
     private boolean setToDestroy;
     private final String TAG = "Player";
 
@@ -22,28 +22,24 @@ public class Player extends B2dBodyEntity {
 
 
 
-    public Player(World world, int positionX, int positionY, Vector2 velocity) {
+    public Player(World world, int positionX, int positionY, Vector2 velocity, B2dModel model) {
         super(world, positionX, positionY, velocity);
+        this.model=model;
         this.body = defineEntity();
         resetPosition = new Vector2(body.getPosition().x, body.getPosition().y);
-        lives = defaultLives;
-
     }
 
     @Override
     public void update(float dt) {
         if (setToDestroy) {
-            Gdx.app.log(TAG, "setToDestroy");
-            body.setTransform(resetPosition, body.getAngle());
-            lives=defaultLives;
+            Gdx.app.log(TAG, "Player is destroyed");
             setToDestroy = false;
         } else {
-            body.setLinearVelocity(velocity);
         }
     }
 
     public void damage() {
-        lives -= 1;
+        model.lives -= 1;
         playerWasDamaged=true;
     }
 
@@ -76,13 +72,6 @@ public class Player extends B2dBodyEntity {
         return null;
     }
 
-    public String getLives(){
-        return Integer.toString(lives);
-    }
-
-    public void setDefaultLives(int defaultLives) {
-        this.defaultLives = defaultLives;
-    }
     public boolean wasPlayerDamaged() {
         if (playerWasDamaged){
             playerWasDamaged=false;
@@ -90,6 +79,5 @@ public class Player extends B2dBodyEntity {
         } else {
             return false;
         }
-
     }
 }
