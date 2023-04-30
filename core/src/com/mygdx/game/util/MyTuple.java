@@ -9,6 +9,9 @@ public class MyTuple {
         this.secondValue = secondValue;
     }
 
+    public MyTuple() {
+    }
+
     public String getFirstValue() {
         return firstValue;
     }

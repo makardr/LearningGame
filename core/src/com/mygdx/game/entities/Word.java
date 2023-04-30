@@ -13,7 +13,6 @@ import com.mygdx.game.util.MyTuple;
 
 public class Word extends B2dBodyEntity {
     private boolean setToDestroy;
-    private boolean destroyed;
     private final String TAG = "Word";
     private Vector2 resetPosition;
     private MyTuple dataSet;
@@ -31,7 +30,7 @@ public class Word extends B2dBodyEntity {
 
     @Override
     public void update(float dt) {
-        if (!setToDestroy){
+        if (!setToDestroy) {
             if (active) {
                 body.setLinearVelocity(velocity);
             }

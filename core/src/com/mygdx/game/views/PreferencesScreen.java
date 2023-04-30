@@ -51,7 +51,7 @@ public class PreferencesScreen implements Screen {
     private Actor createTable() {
         Table table = new Table();
         table.setFillParent(true);
-        table.setDebug(true);
+        table.setDebug(false);
 
         BitmapFont font = new BitmapFont();
 

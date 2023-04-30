@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -29,6 +28,7 @@ import com.mygdx.game.model.B2dModel;
 import com.mygdx.game.util.KeyboardController;
 import com.mygdx.game.util.MyTuple;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class GameScreen implements Screen {
@@ -51,8 +51,8 @@ public class GameScreen implements Screen {
     //    Used to control words
     private Array<Word> words;
     private Array<ChooseButton> buttons;
-    private Array<MyTuple> currentWordSetArray;
-    private Array<MyTuple> arrayForTranslations;
+    private ArrayList<MyTuple> currentWordSetArray;
+    private ArrayList<MyTuple> arrayForTranslations;
 
     //    Public
     public Hud hud;
@@ -121,8 +121,8 @@ public class GameScreen implements Screen {
     private void makeArrays() {
         entities = model.getEntities();
         words = model.getWords();
-        arrayForTranslations = new Array<>();
-        currentWordSetArray = main.getPreferences().getMyTupleArray();
+        arrayForTranslations = new ArrayList<>();
+        currentWordSetArray = main.getPreferences().getMyTuple(2);
         arrayForTranslations.addAll(currentWordSetArray);
     }
 
@@ -211,7 +211,7 @@ public class GameScreen implements Screen {
 
 //        Timer which triggers every 5 seconds to launch words
         timer += delta;
-        if (currentWordSetArray.size > 0) {
+        if (currentWordSetArray.size() > 0) {
             if (timer >= launchWordTimerSetting) {
                 chooseWord();
                 timer = 0;
@@ -234,7 +234,7 @@ public class GameScreen implements Screen {
 //            }
 //        }
 
-        if (currentWordSetArray.size == 0 && allWordsCleared) {
+        if (currentWordSetArray.size() == 0 && allWordsCleared) {
             allWordsCleared = false;
             gameOver();
         }
@@ -246,12 +246,12 @@ public class GameScreen implements Screen {
     public void chooseWord() {
         Random random = new Random();
         int randintWord = random.nextInt(words.size);
-        int randintWordSet = random.nextInt(currentWordSetArray.size);
+        int randintWordSet = random.nextInt(currentWordSetArray.size());
         Word word = words.get(randintWord);
 //        Gdx.app.log(TAG, "Word chose start for word "+word.id+" {");
         if (!word.active) {
             word.setActive(currentWordSetArray.get(randintWordSet));
-            currentWordSetArray.removeIndex(randintWordSet);
+            currentWordSetArray.remove(randintWordSet);
 //            Gdx.app.log(TAG,"Word "+word.getWord()+" activated");
             Gdx.app.log(TAG, currentWordSetArray.toString());
         } else {
@@ -379,15 +379,15 @@ public class GameScreen implements Screen {
         }
     }
 
-    public static String[] createButtonArray(String passedString, Array<MyTuple> inputArray) {
+    public static String[] createButtonArray(String passedString, ArrayList<MyTuple> inputArray) {
         Gdx.app.log("Create Array", inputArray.toString());
         String[] newArray = new String[3];
         newArray[0] = passedString;
         Random rand = new Random();
-        int randomIndex1 = rand.nextInt(inputArray.size);
-        int randomIndex2 = rand.nextInt(inputArray.size);
+        int randomIndex1 = rand.nextInt(inputArray.size());
+        int randomIndex2 = rand.nextInt(inputArray.size());
         while (randomIndex2 == randomIndex1) {
-            randomIndex2 = rand.nextInt(inputArray.size);
+            randomIndex2 = rand.nextInt(inputArray.size());
         }
 
         newArray[1] = inputArray.get(randomIndex1).getSecondValue();
@@ -444,7 +444,4 @@ public class GameScreen implements Screen {
         return model.getLives();
     }
 
-    public Array<MyTuple> getCurrentWordSetArray() {
-        return currentWordSetArray;
-    }
 }
