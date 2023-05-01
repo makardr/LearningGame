@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class MyDataSet {
     private String setName;
-    private int setPB;
+    private float setPB;
     private ArrayList wordsArray;
 
     public MyDataSet() {
@@ -19,11 +19,11 @@ public class MyDataSet {
         this.setName = setName;
     }
 
-    public int getSetPB() {
+    public float getSetPB() {
         return setPB;
     }
 
-    public void setSetPB(int setPB) {
+    public void setSetPB(float setPB) {
         this.setPB = setPB;
     }
 

@@ -42,9 +42,9 @@ public class GameOverScreen implements Screen {
         setName.setText("Set name");
         livesLabel.setText("Lives left: " + main.getLives());
 
-        float testRecord = 1.1f;
-        if (main.getTimeDt() < testRecord) {
+        if (main.getTimeDt() < main.getPreferences().getMyDataSet(main.getId()).getSetPB()) {
             timeLabel.setText("Congratulations! Your new personal best record is " + main.getTime());
+            main.getPreferences().setPb(main.getTimeDt(), main.getId());
         } else {
             timeLabel.setText(main.getTime() + "");
         }
