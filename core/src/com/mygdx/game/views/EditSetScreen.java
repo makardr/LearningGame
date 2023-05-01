@@ -30,7 +30,6 @@ public class EditSetScreen implements Screen {
 
     private TextButton saveToPreferencesButton;
     private Label warningLabel;
-    private Label warningLabel2;
     private TextField setName;
     private TextButton createDictionaryButton;
     private MyDataSet dataSet;
@@ -51,7 +50,6 @@ public class EditSetScreen implements Screen {
         table.setDebug(false);
 
         warningLabel = new Label("Add words to the set there, minimum three words", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        warningLabel2 = new Label("Not enough words to save set", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
 
         setName = new TextField("Enter set name here", skin);
 
@@ -70,14 +68,39 @@ public class EditSetScreen implements Screen {
         addWordButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                dataSet.addWordsToArray(new MyTuple(setWord.getText(),setWordTranslation.getText()));
-                if (dataSet.getWordsArray().size()>=3){
-                    saveToPreferencesButton.setVisible(true);
+//                Add check if word and translation is in array
+                boolean hasSameWord = false;
+                boolean hasSameTranslation = false;
+
+                for (MyTuple tuple : dataSet.getWordsArray()) {
+                    if (setWord.getText()==tuple.getFirstValue()){
+                        hasSameWord=true;
+                        Gdx.app.log(TAG,"hasSameWord");
+                    }
+                    if (setWordTranslation.getText()==tuple.getSecondValue()) {
+                        hasSameTranslation=true;
+                        Gdx.app.log(TAG,"hasSameTranslation");
+                    }
+
                 }
-                setWord.setText("");
-                setWordTranslation.setText("");
-                Gdx.app.log(TAG,dataSet.getSetName());
-                Gdx.app.log(TAG,dataSet.getWordsArray().toString());
+                if (!hasSameWord && !hasSameTranslation) {
+                    Gdx.app.log(TAG, "Word added: " + setWord.getText() + " " + setWordTranslation.getText());
+                    dataSet.addWordsToArray(new MyTuple(setWord.getText(), setWordTranslation.getText()));
+                    if (dataSet.getWordsArray().size() >= 3) {
+                        saveToPreferencesButton.setVisible(true);
+                    }
+                    setWord.setText("");
+                    setWordTranslation.setText("");
+                } else if (hasSameWord) {
+                    Gdx.app.log(TAG, "Word is already in dataset: " + setWord.getText());
+                    warningLabel.setText("Word is already in the dataset");
+                } else if (hasSameTranslation) {
+                    Gdx.app.log(TAG, "Translation is already in dataset: " + setWordTranslation.getText());
+                    warningLabel.setText("Translation is already in the dataset");
+                } else {
+                    Gdx.app.log(TAG, "Word is already ");
+                }
+                Gdx.app.log(TAG,dataSet.getWordsArray()+"");
             }
         });
 
@@ -107,8 +130,6 @@ public class EditSetScreen implements Screen {
 
         table.add(warningLabel).width(200).height(75).padRight(50);
         table.row();
-        table.add(warningLabel2).width(200).height(25).padRight(50);
-        table.row();
         table.add(setName).width(400).height(75).padBottom(10);
         table.row();
         table.add(createDictionaryButton).width(400).height(75).padBottom(10);
@@ -119,8 +140,6 @@ public class EditSetScreen implements Screen {
         setWord.setVisible(false);
         setWordTranslation.setVisible(false);
         table.row();
-        warningLabel2.setVisible(false);
-        table.row();
         table.add(addWordButton).width(400).height(75).padBottom(10);
         addWordButton.setVisible(false);
         table.row();
@@ -130,16 +149,19 @@ public class EditSetScreen implements Screen {
         table.add(goBackMenu).width(400).height(75);
         return table;
     }
-    private void hideSetName(){
+
+    private void hideSetName() {
         createDictionaryButton.setVisible(false);
         setName.setVisible(false);
     }
-    private void showAddWord(){
+
+    private void showAddWord() {
         setWord.setVisible(true);
         setWordTranslation.setVisible(true);
         addWordButton.setVisible(true);
     }
-    private void resetScreen(){
+
+    private void resetScreen() {
         dataSet = main.getPreferences().createNewMyDataSet(setName.getText());
 
         createDictionaryButton.setVisible(true);
@@ -153,6 +175,7 @@ public class EditSetScreen implements Screen {
         setWord.setText("Enter word here");
         setWordTranslation.setText("Enter translation here");
     }
+
     private void saveDictionary() {
     }
 

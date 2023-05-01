@@ -27,7 +27,7 @@ public class MyDataSet {
         this.setPB = setPB;
     }
 
-    public ArrayList getWordsArray() {
+    public ArrayList<MyTuple> getWordsArray() {
         return wordsArray;
     }
 
