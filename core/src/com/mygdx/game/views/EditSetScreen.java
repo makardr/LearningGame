@@ -51,8 +51,7 @@ public class EditSetScreen implements Screen {
         warningLabel = new Label("Add words to the set there, minimum three words", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         warningLabel2 = new Label("Not enough words to save set", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
 
-        setName = new TextField("Set name", skin);
-        setName.setMessageText("Set name 2");
+        setName = new TextField("Enter set name", skin);
 
         final TextButton addWordButton = new TextButton("Add Word", skin);
         addWordButton.addListener(new ChangeListener() {

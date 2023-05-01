@@ -12,43 +12,51 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.LearningGame;
+import com.mygdx.game.util.MyDataSet;
+
+import java.util.ArrayList;
 
 public class ChooseSetScreen implements Screen {
     private final String TAG = "ChooseSetScreen";
     private final LearningGame main;
+    private ArrayList<MyDataSet> mainArrayList;
     private Stage stage;
     private Skin skin;
 
-    private Array<String> wordSet;
 
     public ChooseSetScreen(LearningGame main) {
         this.main = main;
         skin = main.myAssetManager.manager.get("skin/uiskin.json");
-//        Test word set
-        wordSet = new Array<String>();
-        wordSet.add("Example set 1");
-        wordSet.add("Example set 2");
-        wordSet.add("Example set 3");
         stage = new Stage(new ScreenViewport());
+    }
+    @Override
+    public void show() {
+        Gdx.app.log(TAG, "Show");
+        Gdx.input.setInputProcessor(stage);
+        stage.clear();
+        mainArrayList=main.getPreferences().getArrayList();
+        stage.addActor(createTable());
     }
 
     private Actor createTable() {
+        Gdx.app.log(TAG, "Creating new table");
         Table table = new Table();
         table.setFillParent(true);
         table.setDebug(false);
         Label tooltipLabel = new Label("Choose existing word set to learn or edit your word sets", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         table.add(tooltipLabel);
         table.row();
-        for (final String setName : wordSet) {
-
-            TextButton chooseSet = new TextButton(setName, skin);
+        int id=0;
+        for (final MyDataSet wordSet : mainArrayList) {
+            TextButton chooseSet = new TextButton(wordSet.getSetName(), skin);
+            final int finalId = id;
             chooseSet.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    main.setCurrentSet(setName);
+//                    set screen to id
+                    main.setId(finalId);
                     main.changeScreen(LearningGame.GAMESCREEN);
                 }
             });
@@ -58,18 +66,22 @@ public class ChooseSetScreen implements Screen {
             deleteSet.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    deleteSet(setName);
+                    main.getPreferences().removeArrayList(finalId);
                     main.changeScreen(LearningGame.CHOOSESET);
                 }
             });
             table.add(deleteSet).width(100).height(100).padLeft(10).padBottom(10);
             table.row();
+            id+=1;
         }
         final TextButton addSet = new TextButton("Add set", skin);
         addSet.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 main.changeScreen(LearningGame.EDITSET);
+//                Temporary for debug purposes
+//                main.getPreferences().createPlaceholderData();
+//                main.changeScreen(LearningGame.CHOOSESET);
             }
         });
         final TextButton back = new TextButton("Back", skin);
@@ -84,19 +96,6 @@ public class ChooseSetScreen implements Screen {
         table.add(back).width(400).height(100).padBottom(10).center().padLeft(10);
         table.row();
         return table;
-    }
-
-    private void deleteSet(String setName) {
-        wordSet.pop();
-    }
-
-
-    @Override
-    public void show() {
-        Gdx.app.log(TAG, "Show");
-        Gdx.input.setInputProcessor(stage);
-        stage.clear();
-        stage.addActor(createTable());
     }
 
     @Override

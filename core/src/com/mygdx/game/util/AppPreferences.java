@@ -2,12 +2,10 @@ package com.mygdx.game.util;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 
 import java.util.ArrayList;
 
-import netscape.javascript.JSObject;
 
 public class AppPreferences {
     //    Json {{Custom set name, pb time,{{word,translation},{word,translation}}},{{Custom set name, pb time,{{word,translation},{word,translation}}}}
@@ -18,6 +16,7 @@ public class AppPreferences {
     private static final String JSON_STRING = "json_string";
     private static final String TAG = "AppPreferences";
     //    Add placeholder here
+//    private String placeholderJson = convertArrayListToString(createPlaceholderData());
     private String placeholderJson = "";
 
     protected Preferences getPrefs() {
@@ -53,43 +52,63 @@ public class AppPreferences {
 
 
     //    Json
-    public void setJsonStringPreferences(ArrayList<MyDataSet> arrayList) {
-        Gdx.app.log(TAG,convertArrayListToString(arrayList));
+//    Save main ArrayList in preferences
+    public void saveMainArrayListPreferences(ArrayList<MyDataSet> arrayList) {
+        Gdx.app.log(TAG, "Saving: " + convertArrayListToString(arrayList));
         getPrefs().putString(JSON_STRING, convertArrayListToString(arrayList));
         getPrefs().flush();
     }
 
+    //    Get main ArrayList from preferences in string or "" if it does not exist yet
     public String getJsonStringPreferences() {
         return getPrefs().getString(JSON_STRING, placeholderJson);
     }
 
-
+    //      Convert main ArrayList to json string to later store in preferences
     public String convertArrayListToString(ArrayList<MyDataSet> setArrayList) {
         Json json = new Json();
         return json.toJson(setArrayList);
     }
 
-    public ArrayList<MyDataSet> getMyDataSet() {
+    //     Convert main ArrayList from string to ArrayList and return it
+    public ArrayList<MyDataSet> getArrayList() {
+        Gdx.app.log(TAG, "Loading main ArrayList");
         Json json = new Json();
         return json.fromJson(ArrayList.class, getJsonStringPreferences());
     }
 
-    public MyDataSet createDataSet(String setName) {
+    //    Create empty default MyDataSet
+    public MyDataSet createNewMyDataSet(String setName) {
         MyDataSet dataSet = new MyDataSet();
-
         dataSet.setSetName(setName);
         dataSet.setSetPB(0);
-
         return dataSet;
     }
 
+    //    Used if dataset is missing on first startup, saves empty array list
+    public void createNewMainArrayList() {
+        ArrayList<MyDataSet> arrayList = new ArrayList<>();
+        saveMainArrayListPreferences(arrayList);
+    }
+
+    //    From globally saved main ArrayList get set ArrayList and from that get MyTuple
     public ArrayList<MyTuple> getMyTuple(int index) {
-        setJsonStringPreferences(createTestData());
-        ArrayList<MyDataSet> myDataSets = getMyDataSet();
+        ArrayList<MyDataSet> myDataSets = getArrayList();
         return myDataSets.get(index).getWordsArray();
     }
-    public ArrayList<MyDataSet> createTestData() {
-        ArrayList<MyDataSet> arrayList=new ArrayList<>();
+
+    //    Remove set ArrayList from global ArrayList
+    public void removeArrayList(int index) {
+        Gdx.app.log(TAG, "Removing index " + index + " from array list");
+        ArrayList<MyDataSet> tlist = getArrayList();
+        tlist.remove(index);
+        saveMainArrayListPreferences(tlist);
+        Gdx.app.log(TAG, "Main ArrayList is now " + getArrayList());
+    }
+
+    //    Test data set
+    public ArrayList<MyDataSet> createPlaceholderData() {
+        ArrayList<MyDataSet> arrayList = new ArrayList<>();
 
         MyDataSet dataSet = new MyDataSet();
         dataSet.setSetName("arr1");
@@ -121,51 +140,8 @@ public class AppPreferences {
         arrayList.add(dataSet);
         arrayList.add(dataSet2);
         arrayList.add(dataSet3);
+
+        saveMainArrayListPreferences(arrayList);
         return arrayList;
     }
-
-//    Test
-
-//    public String makeJsonString(ArrayList allDataSets) {
-//        Json json = new Json();
-//
-////        Test
-//        MyDataSet data = new MyDataSet();
-//        data.setSetName("Test set");
-//        data.setSetPB(0);
-//        data.addWordsToArray(new MyTuple("arr1 word", "arr1 translation"));
-//        data.addWordsToArray(new MyTuple("arr2 word", "arr2 translation"));
-//        data.addWordsToArray(new MyTuple("arr3 word", "arr3 translation"));
-//
-//        MyDataSet data2 = new MyDataSet();
-//        data2.setSetName("Test set 2");
-//        data2.setSetPB(0);
-//        data2.addWordsToArray(new MyTuple("arr1 word", "arr1 translation"));
-//        data2.addWordsToArray(new MyTuple("arr2 word", "arr2 translation"));
-//        data2.addWordsToArray(new MyTuple("arr3 word", "arr3 translation"));
-//
-////        ArrayList allDataSets = new ArrayList<>();
-//        allDataSets.add(data);
-//        allDataSets.add(data2);
-//
-//        Gdx.app.log(TAG, json.prettyPrint(allDataSets));
-//        return json.toJson(allDataSets);
-//    }
-//
-//
-//    public void readJsonString() {
-//        Json json = new Json();
-//        try {
-//            ArrayList<MyDataSet> varList = json.fromJson(ArrayList.class, getJsonString());
-////        for (ArrayList<MyTuple> arr : var.getWordsArray())
-//            for (MyDataSet set : varList) {
-//                Gdx.app.log(TAG, set.getSetName());
-//            }
-//        } catch (Exception e) {
-//            Gdx.app.error(TAG, e.toString());
-//        }
-//
-//
-////        return json.fromJson(MyDataSet.class,getJsonString());
-//    }
 }

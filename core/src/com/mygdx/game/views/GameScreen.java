@@ -122,7 +122,7 @@ public class GameScreen implements Screen {
         entities = model.getEntities();
         words = model.getWords();
         arrayForTranslations = new ArrayList<>();
-        currentWordSetArray = main.getPreferences().getMyTuple(2);
+        currentWordSetArray = main.getPreferences().getMyTuple(main.getId());
         arrayForTranslations.addAll(currentWordSetArray);
     }
 

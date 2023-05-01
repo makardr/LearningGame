@@ -14,6 +14,8 @@ import com.mygdx.game.views.PreferencesScreen;
 import com.mygdx.game.views.EditSetScreen;
 import com.mygdx.game.views.ChooseSetScreen;
 
+import java.util.ArrayList;
+
 public class LearningGame extends Game {
     private final String TAG = "Main";
     private LoadingScreen loadingScreen;
@@ -23,7 +25,6 @@ public class LearningGame extends Game {
     private GameOverScreen gameOverScreen;
     private EditSetScreen editSetScreen;
     private ChooseSetScreen chooseSetScreen;
-    private String currentSet;
 
     public final static int LOADING = 0;
     public final static int MENU = 1;
@@ -35,12 +36,14 @@ public class LearningGame extends Game {
 
     public MyAssetManager myAssetManager = new MyAssetManager();
     private AppPreferences preferences = new AppPreferences();
-
-    public MyDataSet currentDataSet;
-
-
+    private int id;
     @Override
     public void create() {
+        Gdx.app.log(TAG, getPreferences().getJsonStringPreferences());
+        if (getPreferences().getJsonStringPreferences() == "") {
+//            Create new array list if it does not exist
+            getPreferences().createNewMainArrayList();
+        }
         changeScreen(LOADING);
     }
 
@@ -78,29 +81,31 @@ public class LearningGame extends Game {
         }
     }
 
-    public String getTime(){
+    public String getTime() {
         return gameScreen.getLastTime();
     }
-    public float getTimeDt(){
+
+    public float getTimeDt() {
         return gameScreen.getLastTimeDt();
     }
-    public String getLives(){
+
+    public String getLives() {
         return gameScreen.getCurrentLives();
     }
+
     @Override
     public void dispose() {
         super.dispose();
-    }
-    public String getCurrentSet() {
-        return currentSet;
-    }
-
-    public void setCurrentSet(String currentSet) {
-        this.currentSet = currentSet;
     }
 
     public AppPreferences getPreferences() {
         return this.preferences;
     }
+    public int getId() {
+        return id;
+    }
 
+    public void setId(int id) {
+        this.id = id;
+    }
 }
