@@ -41,17 +41,17 @@ public class Hud implements Disposable{
         Table table = new Table();
         table.top();
         table.setFillParent(true);
-        table.setDebug(true);
+        table.setDebug(false);
         String value = "";
 
-        final TextButton back = new TextButton("Back", skin);
-        back.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                main.changeScreen(LearningGame.ENDGAME);
-                screen.gameOver();
-            }
-        });
+//        final TextButton back = new TextButton("Back", skin);
+//        back.addListener(new ChangeListener() {
+//            @Override
+//            public void changed(ChangeEvent event, Actor actor) {
+//                main.changeScreen(LearningGame.ENDGAME);
+//                screen.gameOver();
+//            }
+//        });
         BitmapFont bitmapFont = new BitmapFont();
 
         livesLabel = new Label(value, new com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle(bitmapFont, Color.BLACK));
@@ -60,7 +60,7 @@ public class Hud implements Disposable{
         table.add(timeLabel).expandX().padTop(10);
         objectLabel = new Label(value, new com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle(bitmapFont, Color.BLACK));
         table.add(objectLabel).expandX().padTop(10);
-        table.add(back);
+//        table.add(back);
 
         stage.addActor(table);
     }

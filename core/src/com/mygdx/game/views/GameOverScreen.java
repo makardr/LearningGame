@@ -23,6 +23,7 @@ public class GameOverScreen implements Screen {
     private Label timeLabel;
     private Label setName;
     private Label livesLabel;
+    private Label gameStatus;
 
 
     public GameOverScreen(LearningGame main) {
@@ -40,7 +41,13 @@ public class GameOverScreen implements Screen {
         stage.addActor(createTable());
 
         setName.setText("Set name");
-        livesLabel.setText("Lives left: " + main.getLives());
+        if (!main.isGameLost()){
+            livesLabel.setText("Lives left: " + main.getLives());
+            gameStatus.setText("Game finished");
+        } else {
+            gameStatus.setText("Game lost");
+        }
+
 
         if (main.getTimeDt() < main.getPreferences().getMyDataSet(main.getId()).getSetPB()) {
             timeLabel.setText("Congratulations! Your new personal best record is " + main.getTime());
@@ -63,7 +70,8 @@ public class GameOverScreen implements Screen {
         livesLabel = new Label("", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         //        Timer how much time the game lasted and personal best
         timeLabel = new Label("", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-
+//      Game status
+        gameStatus = new Label("", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
 
         TextButton playGain = new TextButton("Play again", skin);
         playGain.addListener(new ChangeListener() {
@@ -86,6 +94,8 @@ public class GameOverScreen implements Screen {
         table.add(livesLabel);
         table.row();
 
+        table.add(gameStatus);
+        table.row();
         table.add(timeLabel);
         table.row();
 

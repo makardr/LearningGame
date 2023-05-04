@@ -37,6 +37,8 @@ public class LearningGame extends Game {
     public MyAssetManager myAssetManager = new MyAssetManager();
     private AppPreferences preferences = new AppPreferences();
     private int id;
+
+    private boolean gameLost=false;
     @Override
     public void create() {
         Gdx.app.log(TAG, getPreferences().getJsonStringPreferences());
@@ -107,5 +109,13 @@ public class LearningGame extends Game {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public boolean isGameLost() {
+        return gameLost;
+    }
+
+    public void setGameLost(boolean gameLost) {
+        this.gameLost = gameLost;
     }
 }

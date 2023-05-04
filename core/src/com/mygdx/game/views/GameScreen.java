@@ -163,7 +163,7 @@ public class GameScreen implements Screen {
     }
 
     public String getCurrentWord() {
-        return currentChosenWordEntity.getWord();
+        return currentChosenWordEntity.getTranslation();
     }
 
     @Override
@@ -234,11 +234,14 @@ public class GameScreen implements Screen {
 //            }
 //        }
 
+        main.setGameLost(false);
         if (currentWordSetArray.size() == 0 && allWordsCleared) {
             allWordsCleared = false;
             gameOver();
         }
+
         if (model.lives <= 0) {
+            main.setGameLost(true);
             gameOver();
         }
     }
@@ -285,7 +288,7 @@ public class GameScreen implements Screen {
         }
         batch.end();
         hud.stage.draw();
-        debugRenderer.render(model.world, camera.combined);
+        renderer.render(model.world, camera.combined);
     }
 
     private void updateController() {

@@ -58,6 +58,7 @@ public class EditSetScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 dataSet = main.getPreferences().createNewMyDataSet(setName.getText());
+                createDictionaryButton.setVisible(false);
                 hideSetName();
                 showAddWord();
             }
