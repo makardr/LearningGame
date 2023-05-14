@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.LearningGame;
@@ -24,10 +25,9 @@ import java.util.ArrayList;
 public class EditSetScreen implements Screen {
     private final String TAG = "EditSetScreen";
     private final LearningGame main;
+    private final BitmapFont font;
     private Stage stage;
     private Skin skin;
-    private Array<TextField> wordsDictionary;
-
     private TextButton saveToPreferencesButton;
     private Label warningLabel;
     private TextField setName;
@@ -40,17 +40,17 @@ public class EditSetScreen implements Screen {
     public EditSetScreen(LearningGame main) {
         this.main = main;
         stage = new Stage(new ScreenViewport());
-        skin = main.myAssetManager.manager.get("skin/uiskin.json");
-        wordsDictionary = new Array<TextField>();
+        skin = main.myAssetManager.manager.get(main.myAssetManager.skin);
+        font = main.myAssetManager.manager.get(main.myAssetManager.font);
+        font.getData().setScale(1f);
     }
 
     private Actor createTable() {
         Table table = new Table();
         table.setFillParent(true);
-        table.setDebug(false);
+        table.setDebug(LearningGame.DEBUG);
 
-        warningLabel = new Label("Add words to the set there, minimum three words", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-
+        warningLabel = new Label("Minimum is three words", new Label.LabelStyle(font, Color.BLACK));
         setName = new TextField("Enter set name here", skin);
 
         createDictionaryButton = new TextButton("Save set name", skin);
@@ -74,13 +74,13 @@ public class EditSetScreen implements Screen {
                 boolean hasSameTranslation = false;
 
                 for (MyTuple tuple : dataSet.getWordsArray()) {
-                    if (setWord.getText()==tuple.getFirstValue()){
-                        hasSameWord=true;
-                        Gdx.app.log(TAG,"hasSameWord");
+                    if (setWord.getText() == tuple.getFirstValue()) {
+                        hasSameWord = true;
+                        Gdx.app.log(TAG, "hasSameWord");
                     }
-                    if (setWordTranslation.getText()==tuple.getSecondValue()) {
-                        hasSameTranslation=true;
-                        Gdx.app.log(TAG,"hasSameTranslation");
+                    if (setWordTranslation.getText() == tuple.getSecondValue()) {
+                        hasSameTranslation = true;
+                        Gdx.app.log(TAG, "hasSameTranslation");
                     }
 
                 }
@@ -101,7 +101,7 @@ public class EditSetScreen implements Screen {
                 } else {
                     Gdx.app.log(TAG, "Word is already ");
                 }
-                Gdx.app.log(TAG,dataSet.getWordsArray()+"");
+                Gdx.app.log(TAG, dataSet.getWordsArray() + "");
             }
         });
 
@@ -128,26 +128,26 @@ public class EditSetScreen implements Screen {
 
         setWord = new TextField("Enter word here", skin);
         setWordTranslation = new TextField("Enter translation here", skin);
-
-        table.add(warningLabel).width(200).height(75).padRight(50);
+        table.defaults().width(400).height(100);
+        table.add(warningLabel).width(75).height(75).align(Align.left);
         table.row();
-        table.add(setName).width(400).height(75).padBottom(10);
+        table.add(setName).padBottom(10);
         table.row();
-        table.add(createDictionaryButton).width(400).height(75).padBottom(10);
+        table.add(createDictionaryButton).padBottom(10);
         table.row();
-        table.add(setWord).width(400).height(75).padBottom(10);
+        table.add(setWord).padBottom(10);
         table.row();
-        table.add(setWordTranslation).width(400).height(75).padBottom(10);
+        table.add(setWordTranslation).padBottom(10);
         setWord.setVisible(false);
         setWordTranslation.setVisible(false);
         table.row();
-        table.add(addWordButton).width(400).height(75).padBottom(10);
+        table.add(addWordButton).padBottom(10);
         addWordButton.setVisible(false);
         table.row();
-        table.add(saveToPreferencesButton).width(400).height(75).padBottom(10);
+        table.add(saveToPreferencesButton).padBottom(10);
         saveToPreferencesButton.setVisible(false);
         table.row();
-        table.add(goBackMenu).width(400).height(75);
+        table.add(goBackMenu);
         return table;
     }
 
@@ -194,7 +194,7 @@ public class EditSetScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 1); //  clear the screen
+        Gdx.gl.glClearColor(LearningGame.R, LearningGame.G, LearningGame.B, LearningGame.A);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));

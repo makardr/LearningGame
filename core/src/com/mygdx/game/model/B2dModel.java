@@ -86,7 +86,7 @@ public class B2dModel {
         Word testWord2 = new Word(world, Gdx.graphics.getWidth() / 2 + 400, Gdx.graphics.getHeight() / 2, new Vector2(-25f*gameSpeed, 0f), new MyTuple("",""),2);
         entities.add(testWord2);
         words.add(testWord2);
-        Word testWord3 = new Word(world, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2 + 500, new Vector2(0f, -25f*gameSpeed), new MyTuple("",""),3);
+        Word testWord3 = new Word(world, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2+400, new Vector2(0f, -25f*gameSpeed), new MyTuple("",""),3);
         entities.add(testWord3);
         words.add(testWord3);
         Word testWord4 = new Word(world, Gdx.graphics.getWidth() / 2-400, Gdx.graphics.getHeight() / 2 + 500, new Vector2(20f*gameSpeed, -30f*gameSpeed), new MyTuple("",""),4);

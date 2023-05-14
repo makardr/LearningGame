@@ -84,7 +84,7 @@ public class GameScreen implements Screen {
         img = main.myAssetManager.manager.get(main.myAssetManager.libgdxPlaceholder);
         player_texture = main.myAssetManager.manager.get(main.myAssetManager.player_texture);
         font = main.myAssetManager.manager.get(main.myAssetManager.font);
-        skin = main.myAssetManager.manager.get("skin/uiskin.json");
+        skin = main.myAssetManager.manager.get(main.myAssetManager.skin);
 
 //        font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         font.setColor(0.0f, 0.0f, 0.0f, 1.0f);

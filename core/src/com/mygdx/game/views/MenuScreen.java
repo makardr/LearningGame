@@ -28,7 +28,7 @@ public class MenuScreen implements Screen {
         Gdx.app.log(TAG, "Show");
 
         Gdx.input.setInputProcessor(stage);
-        skin = main.myAssetManager.manager.get("skin/uiskin.json");
+        skin = main.myAssetManager.manager.get(main.myAssetManager.skin);
 
         TextButton newGame = new TextButton("Start Game", skin);
 
@@ -57,21 +57,22 @@ public class MenuScreen implements Screen {
 
         Table table = new Table();
         table.setFillParent(true);
-        table.setDebug(false);
+        table.setDebug(LearningGame.DEBUG);
+        table.defaults().width(400).height(100).padBottom(10);
 
-        table.add(newGame).fillX().uniformX().uniformY().width(400).height(150).padBottom(10);
-//        table.row().pad(10, 0, 10, 0);
+        table.add(newGame).fillX().uniformX().uniformY();
         table.row();
-        table.add(preferences).fillX().uniformX().uniformY().width(400).height(150).padBottom(10);
+        table.add(preferences).fillX().uniformX().uniformY();
         table.row();
-        table.add(exit).fillX().uniformX().uniformY().width(400).height(150);
+        table.add(exit).fillX().uniformX().uniformY();
 
         stage.addActor(table);
+
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0f, 0f, 0f, 1);
+        Gdx.gl.glClearColor(LearningGame.R, LearningGame.G, LearningGame.B, LearningGame.A);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();

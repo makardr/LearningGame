@@ -19,6 +19,7 @@ public class GameOverScreen implements Screen {
     private final String TAG = "GameOverScreen";
     private final LearningGame main;
     private final Stage stage;
+    private final BitmapFont font;
     private Skin skin;
     private Label timeLabel;
     private Label setName;
@@ -29,8 +30,9 @@ public class GameOverScreen implements Screen {
     public GameOverScreen(LearningGame main) {
         this.main = main;
         stage = new Stage(new ScreenViewport());
-        skin = main.myAssetManager.manager.get("skin/uiskin.json");
-
+        skin = main.myAssetManager.manager.get(main.myAssetManager.skin);
+        font = main.myAssetManager.manager.get(main.myAssetManager.font);
+        font.getData().setScale(1f);
     }
 
     @Override
@@ -50,7 +52,7 @@ public class GameOverScreen implements Screen {
 
 
         if (main.getTimeDt() < main.getPreferences().getMyDataSet(main.getId()).getSetPB()) {
-            timeLabel.setText("Congratulations! Your new personal best record is " + main.getTime());
+            timeLabel.setText("Your new personal best record is " + main.getTime());
             main.getPreferences().setPb(main.getTimeDt(), main.getId());
         } else {
             timeLabel.setText(main.getTime() + "");
@@ -61,17 +63,17 @@ public class GameOverScreen implements Screen {
 
         Table table = new Table();
         table.setFillParent(true);
-        table.setDebug(false);
+        table.setDebug(LearningGame.DEBUG);
 
 
 //        Current set name
-        setName = new Label("", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        setName = new Label("", new Label.LabelStyle(font, Color.BLACK));
 //        Lives
-        livesLabel = new Label("", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        livesLabel = new Label("", new Label.LabelStyle(font, Color.BLACK));
         //        Timer how much time the game lasted and personal best
-        timeLabel = new Label("", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        timeLabel = new Label("", new Label.LabelStyle(font, Color.BLACK));
 //      Game status
-        gameStatus = new Label("", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        gameStatus = new Label("", new Label.LabelStyle(font, Color.BLACK));
 
         TextButton playGain = new TextButton("Play again", skin);
         playGain.addListener(new ChangeListener() {
@@ -99,10 +101,10 @@ public class GameOverScreen implements Screen {
         table.add(timeLabel);
         table.row();
 
-        table.add(playGain).fillX().uniformX().uniformY().width(400).height(150).padBottom(10);
+        table.add(playGain).fillX().uniformX().uniformY().width(400).height(100).padBottom(10);
         table.row();
 
-        table.add(returnToMainMenu).fillX().uniformX().uniformY().width(400).height(150).padBottom(10);
+        table.add(returnToMainMenu).fillX().uniformX().uniformY().width(400).height(100).padBottom(10);
         table.row();
 
         return table;
@@ -110,7 +112,7 @@ public class GameOverScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 1); //  clear the screen
+        Gdx.gl.glClearColor(LearningGame.R, LearningGame.G, LearningGame.B, LearningGame.A);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));

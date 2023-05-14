@@ -33,11 +33,14 @@ public class LearningGame extends Game {
     public final static int ENDGAME = 4;
     public final static int CHOOSESET = 5;
     public final static int EDITSET = 6;
-
+    public final static float R = 0.4f;
+    public final static float G = 0.8f;
+    public final static float B = 1f;
+    public final static float A = 1f;
+    public final static boolean DEBUG=false;
     public MyAssetManager myAssetManager = new MyAssetManager();
     private AppPreferences preferences = new AppPreferences();
     private int id;
-
     private boolean gameLost=false;
     @Override
     public void create() {

@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.LearningGame;
 import com.mygdx.game.util.DigitFilter;
@@ -46,16 +47,15 @@ public class PreferencesScreen implements Screen {
         stage.clear();
         Gdx.input.setInputProcessor(stage);
         stage.addActor(createTable());
+        stage.addActor(createSecondTable());
     }
 
     private Actor createTable() {
         Table table = new Table();
         table.setFillParent(true);
-        table.setDebug(false);
-
-        BitmapFont font = new BitmapFont();
-
-        Label speedLabel = new Label("Game speed", new Label.LabelStyle(font, Color.WHITE));
+        table.setDebug(LearningGame.DEBUG);
+        table.defaults().width(200).height(100);
+        Label speedLabel = new Label("Game speed:", new Label.LabelStyle(font, Color.BLACK));
 
         final Slider gameSpeedSlider = new Slider(1f, 2f, 0.1f, false, skin);
         gameSpeedSlider.setValue(main.getPreferences().getGameSpeed());
@@ -67,8 +67,9 @@ public class PreferencesScreen implements Screen {
             }
         });
 
-        Label livesLabel = new Label("Number of lives", new Label.LabelStyle(font, Color.WHITE));
+        Label livesLabel = new Label("Lives:", new Label.LabelStyle(font, Color.BLACK));
         livesSettingTextField = new TextField(String.valueOf(main.getPreferences().getLivesNumber()), skin);
+        livesSettingTextField.setAlignment(Align.center);
         livesSettingTextField.setTextFieldListener(filter);
         livesSettingTextField.addListener(new EventListener() {
             @Override
@@ -80,9 +81,10 @@ public class PreferencesScreen implements Screen {
             }
         });
 
-        Label spawnTimeLabel = new Label("Spawn time:", new Label.LabelStyle(font, Color.WHITE));
+        Label spawnTimeLabel = new Label("Spawn time:", new Label.LabelStyle(font, Color.BLACK));
         spawnTimeTextField = new TextField(String.valueOf(main.getPreferences().getSpawnTimer()), skin);
         spawnTimeTextField.setTextFieldListener(filter);
+        spawnTimeTextField.setAlignment(Align.center);
         spawnTimeTextField.addListener(new EventListener() {
             @Override
             public boolean handle(Event event) {
@@ -93,6 +95,24 @@ public class PreferencesScreen implements Screen {
             }
         });
 
+        table.add(speedLabel).padRight(10);
+        table.add(gameSpeedSlider);
+        table.row();
+        table.add(livesLabel).padRight(10);
+        table.add(livesSettingTextField);
+        table.row();
+        table.add(spawnTimeLabel).padRight(10);
+        table.add(spawnTimeTextField);
+        table.row();
+        return table;
+    }
+
+    private Actor createSecondTable() {
+        Table table = new Table();
+        table.setFillParent(false);
+        table.setDebug(LearningGame.DEBUG);
+        table.setBounds(0, 100, Gdx.graphics.getWidth(), 300);
+
         final TextButton back = new TextButton("Back", skin);
         back.addListener(new ChangeListener() {
             @Override
@@ -100,24 +120,13 @@ public class PreferencesScreen implements Screen {
                 main.changeScreen(LearningGame.MENU);
             }
         });
-
-        table.add(speedLabel).width(200).height(75).padRight(10);
-        table.add(gameSpeedSlider).width(200).height(75);
-        table.row();
-        table.add(livesLabel).width(200).height(75).padRight(10);
-        table.add(livesSettingTextField).width(200).height(75);
-        table.row();
-        table.add(spawnTimeLabel).width(200).height(75).padRight(10);
-        table.add(spawnTimeTextField).width(200).height(75);
-        table.row();
-        table.add(back).width(200).height(75).padTop(10);
-
+        table.add(back).width(400).height(100).padTop(30);
         return table;
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 1); //  clear the screen
+        Gdx.gl.glClearColor(LearningGame.R, LearningGame.G, LearningGame.B, LearningGame.A);
 //        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -149,18 +158,5 @@ public class PreferencesScreen implements Screen {
     public void dispose() {
         stage.dispose();
         skin.dispose();
-    }
-
-    public void initialyzeNumericStyle() {
-        TextField.TextFieldStyle style = new TextField.TextFieldStyle();
-        style.background = skin.getDrawable("textfield");
-        style.font = font;
-        style.fontColor = Color.BLACK;
-        style.cursor = skin.getDrawable("cursor");
-        style.selection = skin.getDrawable("selection");
-        style.messageFont = font;
-        style.messageFontColor = Color.GRAY;
-
-        TextField.TextFieldStyle numericStyle = new TextField.TextFieldStyle(style);
     }
 }

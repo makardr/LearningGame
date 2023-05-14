@@ -23,7 +23,11 @@ public class MyAssetManager {
     // Music
 
     // Skin
-    public final String skin = "skin/uiskin.json";
+    public final String skin = "skin/cloud_form_skin/cloud-form-ui.json";
+    public final String skin_atlas = "skin/cloud_form_skin/cloud-form-ui.atlas";
+
+    public final String old_skin = "skin/uiskin/uiskin.json";
+    public final String old_skin_atlas = "skin/uiskin/uiskin.atlas";
     //    Font
     public final String font = "font/white_font.fnt";
 
@@ -49,9 +53,10 @@ public class MyAssetManager {
     }
 
     public void queueAddSkin() {
-        SkinLoader.SkinParameter params = new SkinLoader.SkinParameter("skin/uiskin.atlas");
+        SkinLoader.SkinParameter params = new SkinLoader.SkinParameter(skin_atlas);
         manager.load(skin, Skin.class, params);
-        Gdx.app.log(TAG, "Load images");
+
+        Gdx.app.log(TAG, "Load skin");
     }
 
     public void queueAddFonts() {
