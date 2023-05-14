@@ -24,6 +24,7 @@ import com.mygdx.game.views.GameScreen;
 
 public class Hud implements Disposable{
     private final GameScreen screen;
+    private final BitmapFont font;
     public Stage stage;
     private Viewport viewport;
     //    Widgets
@@ -43,7 +44,8 @@ public class Hud implements Disposable{
         table.setFillParent(true);
         table.setDebug(false);
         String value = "";
-
+        font = main.myAssetManager.manager.get(main.myAssetManager.font);
+        font.getData().setScale(1.0f);
 //        final TextButton back = new TextButton("Back", skin);
 //        back.addListener(new ChangeListener() {
 //            @Override
@@ -52,13 +54,12 @@ public class Hud implements Disposable{
 //                screen.gameOver();
 //            }
 //        });
-        BitmapFont bitmapFont = new BitmapFont();
 
-        livesLabel = new Label(value, new com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle(bitmapFont, Color.BLACK));
+        livesLabel = new Label(value, new com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle(font, Color.BLACK));
         table.add(livesLabel).expandX().padTop(10);
-        timeLabel = new Label(value, new com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle(bitmapFont, Color.BLACK));
+        timeLabel = new Label(value, new com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle(font, Color.BLACK));
         table.add(timeLabel).expandX().padTop(10);
-        objectLabel = new Label(value, new com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle(bitmapFont, Color.BLACK));
+        objectLabel = new Label(value, new com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle(font, Color.BLACK));
         table.add(objectLabel).expandX().padTop(10);
 //        table.add(back);
 

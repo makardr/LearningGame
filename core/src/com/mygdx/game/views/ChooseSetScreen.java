@@ -55,6 +55,8 @@ public class ChooseSetScreen implements Screen {
         table.add(tooltipLabel).width(100).height(100).align(Align.left).padLeft(100);
         table.row();
         int id = 0;
+
+        Gdx.app.log(TAG,mainArrayList.toString());
         for (final MyDataSet wordSet : mainArrayList) {
             TextButton chooseSet = new TextButton(wordSet.getSetName(), skin);
             final int finalId = id;

@@ -47,8 +47,10 @@ public class LearningGame extends Game {
         Gdx.app.log(TAG, getPreferences().getJsonStringPreferences());
         if (getPreferences().getJsonStringPreferences() == "") {
 //            Create new array list if it does not exist
+            Gdx.app.error(TAG,"Could not find data, creating");
             getPreferences().createNewMainArrayList();
         }
+        Gdx.app.log(TAG,"Current preferences are: "+getPreferences().getJsonStringPreferences());
         changeScreen(LOADING);
     }
 
