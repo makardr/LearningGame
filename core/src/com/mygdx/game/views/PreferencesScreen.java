@@ -1,5 +1,6 @@
 package com.mygdx.game.views;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -26,6 +27,7 @@ import java.util.Objects;
 public class PreferencesScreen implements Screen {
     private final String TAG = "PreferencesScreen";
     private final DigitFilter filter;
+    private int multiplier=1;
     private LearningGame main;
     private Stage stage;
     private Skin skin;
@@ -39,6 +41,10 @@ public class PreferencesScreen implements Screen {
         skin = main.myAssetManager.manager.get(main.myAssetManager.skin);
         font = main.myAssetManager.manager.get(main.myAssetManager.font);
         filter = new DigitFilter();
+        if(Gdx.app.getType() == Application.ApplicationType.Android) {
+            font.getData().setScale(2.0f);
+            multiplier=2;
+        }
     }
 
     @Override
@@ -54,7 +60,7 @@ public class PreferencesScreen implements Screen {
         Table table = new Table();
         table.setFillParent(true);
         table.setDebug(LearningGame.DEBUG);
-        table.defaults().width(200).height(100);
+        table.defaults().width(200*multiplier).height(100*multiplier);
         Label speedLabel = new Label("Game speed:", new Label.LabelStyle(font, Color.BLACK));
 
         final Slider gameSpeedSlider = new Slider(1f, 2f, 0.1f, false, skin);
@@ -95,13 +101,13 @@ public class PreferencesScreen implements Screen {
             }
         });
 
-        table.add(speedLabel).padRight(10);
+        table.add(speedLabel).padRight(10*multiplier);
         table.add(gameSpeedSlider);
         table.row();
-        table.add(livesLabel).padRight(10);
+        table.add(livesLabel).padRight(10*multiplier);
         table.add(livesSettingTextField);
         table.row();
-        table.add(spawnTimeLabel).padRight(10);
+        table.add(spawnTimeLabel).padRight(10*multiplier);
         table.add(spawnTimeTextField);
         table.row();
         return table;
@@ -111,7 +117,7 @@ public class PreferencesScreen implements Screen {
         Table table = new Table();
         table.setFillParent(false);
         table.setDebug(LearningGame.DEBUG);
-        table.setBounds(0, 100, Gdx.graphics.getWidth(), 300);
+        table.setBounds(0, 100*multiplier, Gdx.graphics.getWidth(), 300*multiplier);
 
         final TextButton back = new TextButton("Back", skin);
         back.addListener(new ChangeListener() {
@@ -120,7 +126,7 @@ public class PreferencesScreen implements Screen {
                 main.changeScreen(LearningGame.MENU);
             }
         });
-        table.add(back).width(400).height(100).padTop(30);
+        table.add(back).width(400*multiplier).height(100*multiplier).padTop(30*multiplier);
         return table;
     }
 

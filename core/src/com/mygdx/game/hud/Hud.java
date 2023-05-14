@@ -1,5 +1,6 @@
 package com.mygdx.game.hud;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.files.FileHandle;
@@ -45,7 +46,10 @@ public class Hud implements Disposable{
         table.setDebug(false);
         String value = "";
         font = main.myAssetManager.manager.get(main.myAssetManager.font);
-        font.getData().setScale(1.0f);
+        if(Gdx.app.getType() == Application.ApplicationType.Android) {
+            font.getData().setScale(2.0f);
+        }
+
 //        final TextButton back = new TextButton("Back", skin);
 //        back.addListener(new ChangeListener() {
 //            @Override

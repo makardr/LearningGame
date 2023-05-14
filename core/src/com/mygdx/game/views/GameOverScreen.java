@@ -1,5 +1,6 @@
 package com.mygdx.game.views;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -20,6 +21,7 @@ public class GameOverScreen implements Screen {
     private final LearningGame main;
     private final Stage stage;
     private final BitmapFont font;
+    private int multiplier=1;
     private Skin skin;
     private Label timeLabel;
     private Label setName;
@@ -32,7 +34,10 @@ public class GameOverScreen implements Screen {
         stage = new Stage(new ScreenViewport());
         skin = main.myAssetManager.manager.get(main.myAssetManager.skin);
         font = main.myAssetManager.manager.get(main.myAssetManager.font);
-        font.getData().setScale(1f);
+        if(Gdx.app.getType() == Application.ApplicationType.Android) {
+            font.getData().setScale(2.0f);
+            multiplier=2;
+        }
     }
 
     @Override
@@ -64,7 +69,6 @@ public class GameOverScreen implements Screen {
         Table table = new Table();
         table.setFillParent(true);
         table.setDebug(LearningGame.DEBUG);
-
 
 //        Current set name
         setName = new Label("", new Label.LabelStyle(font, Color.BLACK));
@@ -101,10 +105,10 @@ public class GameOverScreen implements Screen {
         table.add(timeLabel);
         table.row();
 
-        table.add(playGain).fillX().uniformX().uniformY().width(400).height(100).padBottom(10);
+        table.add(playGain).fillX().uniformX().uniformY().width(400*multiplier).height(100*multiplier).padBottom(10*multiplier);
         table.row();
 
-        table.add(returnToMainMenu).fillX().uniformX().uniformY().width(400).height(100).padBottom(10);
+        table.add(returnToMainMenu).fillX().uniformX().uniformY().width(400*multiplier).height(100*multiplier).padBottom(10*multiplier);
         table.row();
 
         return table;

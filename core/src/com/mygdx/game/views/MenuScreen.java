@@ -1,5 +1,6 @@
 package com.mygdx.game.views;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -16,11 +17,15 @@ public class MenuScreen implements Screen {
     private final String TAG = "MenuScreen";
     private final LearningGame main;
     private final Stage stage;
+    private int multiplier=1;
     private Skin skin;
 
     public MenuScreen(LearningGame main) {
         this.main = main;
         stage = new Stage(new ScreenViewport());
+        if(Gdx.app.getType() == Application.ApplicationType.Android) {
+            multiplier=2;
+        }
     }
 
     @Override
@@ -58,7 +63,7 @@ public class MenuScreen implements Screen {
         Table table = new Table();
         table.setFillParent(true);
         table.setDebug(LearningGame.DEBUG);
-        table.defaults().width(400).height(100).padBottom(10);
+        table.defaults().width(400*multiplier).height(100*multiplier).padBottom(10*multiplier);
 
         table.add(newGame).fillX().uniformX().uniformY();
         table.row();

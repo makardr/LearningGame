@@ -1,5 +1,6 @@
 package com.mygdx.game.model;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -20,6 +21,7 @@ import com.mygdx.game.views.GameScreen;
 public class B2dModel {
     private final String TAG="B2dModel";
     private final OrthographicCamera cam;
+    private int multiplier=1;
 
 
     private KeyboardController controller;
@@ -48,6 +50,9 @@ public class B2dModel {
         words = new Array<Word>();
         gameStart();
         createBodies();
+        if(Gdx.app.getType() == Application.ApplicationType.Android) {
+            multiplier=2;
+        }
     }
     public void gameStart(){
 //        gameSpeed does not apply after model was created
@@ -95,10 +100,6 @@ public class B2dModel {
         Word testWord5 = new Word(world, Gdx.graphics.getWidth() / 2+400, Gdx.graphics.getHeight() / 2 + 500, new Vector2(-20f*gameSpeed, -30f*gameSpeed), new MyTuple("",""),5);
         entities.add(testWord5);
         words.add(testWord5);
-
-//        testWord.setInactive();
-//        Word testWord4 = new Word(world, Gdx.graphics.getWidth() / 2 + 200, Gdx.graphics.getHeight() / 2, new Vector2(-25, 0), "тестÕÜÄ");
-//        entities.add(testWord4);
     }
 
     public void updateEntities(float delta) {

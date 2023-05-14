@@ -126,28 +126,28 @@ public class AppPreferences {
         dataSet.setSetName("arr1");
         dataSet.setSetPB(0);
         dataSet.addWordsToArray(new MyTuple("arr1 word1", "arr1 translation"));
-        dataSet.addWordsToArray(new MyTuple("arr1 word2", "arr1 translation"));
-        dataSet.addWordsToArray(new MyTuple("arr1 word3", "arr1 translation"));
-        dataSet.addWordsToArray(new MyTuple("arr1 word4", "arr1 translation"));
-        dataSet.addWordsToArray(new MyTuple("arr1 word5", "arr1 translation"));
+        dataSet.addWordsToArray(new MyTuple("arr1 word2", "arr2 translation"));
+        dataSet.addWordsToArray(new MyTuple("arr1 word3", "arr3 translation"));
+        dataSet.addWordsToArray(new MyTuple("arr1 word4", "arr4 translation"));
+        dataSet.addWordsToArray(new MyTuple("arr1 word5", "arr5 translation"));
 
         MyDataSet dataSet2 = new MyDataSet();
         dataSet2.setSetName("arr2");
         dataSet2.setSetPB(100000);
-        dataSet2.addWordsToArray(new MyTuple("arr2 word1", "arr2 translation"));
+        dataSet2.addWordsToArray(new MyTuple("arr2 word1", "arr1 translation"));
         dataSet2.addWordsToArray(new MyTuple("arr2 word2", "arr2 translation"));
-        dataSet2.addWordsToArray(new MyTuple("arr2 word3", "arr2 translation"));
-        dataSet2.addWordsToArray(new MyTuple("arr2 word4", "arr2 translation"));
-        dataSet2.addWordsToArray(new MyTuple("arr2 word5", "arr2 translation"));
+        dataSet2.addWordsToArray(new MyTuple("arr2 word3", "arr3 translation"));
+        dataSet2.addWordsToArray(new MyTuple("arr2 word4", "arr4 translation"));
+        dataSet2.addWordsToArray(new MyTuple("arr2 word5", "arr5 translation"));
 
         MyDataSet dataSet3 = new MyDataSet();
         dataSet3.setSetName("arr3");
         dataSet3.setSetPB(99999999);
-        dataSet3.addWordsToArray(new MyTuple("arr3 word1", "arr3 translation"));
-        dataSet3.addWordsToArray(new MyTuple("arr3 word2", "arr3 translation"));
+        dataSet3.addWordsToArray(new MyTuple("arr3 word1", "arr1 translation"));
+        dataSet3.addWordsToArray(new MyTuple("arr3 word2", "arr2 translation"));
         dataSet3.addWordsToArray(new MyTuple("arr3 word3", "arr3 translation"));
-        dataSet3.addWordsToArray(new MyTuple("arr3 word4", "arr3 translation"));
-        dataSet3.addWordsToArray(new MyTuple("arr3 word5", "arr3 translation"));
+        dataSet3.addWordsToArray(new MyTuple("arr3 word4", "arr4 translation"));
+        dataSet3.addWordsToArray(new MyTuple("arr3 word5", "arr5 translation"));
 
         arrayList.add(dataSet);
         arrayList.add(dataSet2);

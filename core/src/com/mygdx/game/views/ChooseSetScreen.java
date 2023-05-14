@@ -1,5 +1,6 @@
 package com.mygdx.game.views;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -26,13 +27,17 @@ public class ChooseSetScreen implements Screen {
     private Stage stage;
     private Skin skin;
     private BitmapFont font;
-
+    private int multiplier=1;
     public ChooseSetScreen(LearningGame main) {
         this.main = main;
         skin = main.myAssetManager.manager.get(main.myAssetManager.skin);
         stage = new Stage(new ScreenViewport());
         font = main.myAssetManager.manager.get(main.myAssetManager.font);
-        font.getData().setScale(1f);
+        if(Gdx.app.getType() == Application.ApplicationType.Android) {
+            font.getData().setScale(2.0f);
+            multiplier=2;
+        }
+
     }
 
     @Override
@@ -50,9 +55,9 @@ public class ChooseSetScreen implements Screen {
         Table table = new Table();
         table.setFillParent(true);
         table.setDebug(LearningGame.DEBUG);
-        table.setBounds(0,200,Gdx.graphics.getWidth(), Gdx.graphics.getHeight()/3*2);
+        table.setBounds(0,200*multiplier,Gdx.graphics.getWidth(), Gdx.graphics.getHeight()/3*2);
         Label tooltipLabel = new Label("Choose existing word set", new Label.LabelStyle(font, Color.BLACK));
-        table.add(tooltipLabel).width(100).height(100).align(Align.left).padLeft(100);
+        table.add(tooltipLabel).width(100*multiplier).height(100*multiplier).align(Align.left).padLeft(100*multiplier);
         table.row();
         int id = 0;
 
@@ -68,7 +73,7 @@ public class ChooseSetScreen implements Screen {
                     main.changeScreen(LearningGame.GAMESCREEN);
                 }
             });
-            table.add(chooseSet).width(400).height(100).padLeft(10).padBottom(10);
+            table.add(chooseSet).width(400*multiplier).height(100*multiplier).padLeft(10*multiplier).padBottom(10*multiplier);
 
             final TextButton deleteSet = new TextButton("Del.", skin);
             deleteSet.addListener(new ChangeListener() {
@@ -78,7 +83,7 @@ public class ChooseSetScreen implements Screen {
                     main.changeScreen(LearningGame.CHOOSESET);
                 }
             });
-            table.add(deleteSet).width(100).height(100).padLeft(10).padBottom(10);
+            table.add(deleteSet).width(100*multiplier).height(100*multiplier).padLeft(10*multiplier).padBottom(10*multiplier);
             table.row();
             id += 1;
         }
@@ -90,7 +95,7 @@ public class ChooseSetScreen implements Screen {
         table.setFillParent(false);
         table.setDebug(LearningGame.DEBUG);
         table.setBounds(0,0,Gdx.graphics.getWidth(), Gdx.graphics.getHeight()/3);
-        table.defaults().width(400).height(100).padBottom(10);
+        table.defaults().width(400*multiplier).height(100*multiplier).padBottom(10*multiplier);
 
         final TextButton addSet = new TextButton("Add set", skin);
         addSet.addListener(new ChangeListener() {

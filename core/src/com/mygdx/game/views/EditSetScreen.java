@@ -1,5 +1,6 @@
 package com.mygdx.game.views;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -26,6 +27,7 @@ public class EditSetScreen implements Screen {
     private final String TAG = "EditSetScreen";
     private final LearningGame main;
     private final BitmapFont font;
+    private int multiplier=1;
     private Stage stage;
     private Skin skin;
     private TextButton saveToPreferencesButton;
@@ -42,7 +44,10 @@ public class EditSetScreen implements Screen {
         stage = new Stage(new ScreenViewport());
         skin = main.myAssetManager.manager.get(main.myAssetManager.skin);
         font = main.myAssetManager.manager.get(main.myAssetManager.font);
-        font.getData().setScale(1f);
+        if(Gdx.app.getType() == Application.ApplicationType.Android) {
+            font.getData().setScale(2.0f);
+            multiplier=2;
+        }
     }
 
     private Actor createTable() {
@@ -128,23 +133,23 @@ public class EditSetScreen implements Screen {
 
         setWord = new TextField("Enter word here", skin);
         setWordTranslation = new TextField("Enter translation here", skin);
-        table.defaults().width(400).height(100);
-        table.add(warningLabel).width(75).height(75).align(Align.left);
+        table.defaults().width(400*multiplier).height(100*multiplier);
+        table.add(warningLabel).width(75*multiplier).height(75*multiplier).align(Align.left);
         table.row();
-        table.add(setName).padBottom(10);
+        table.add(setName).padBottom(10*multiplier);
         table.row();
-        table.add(createDictionaryButton).padBottom(10);
+        table.add(createDictionaryButton).padBottom(10*multiplier);
         table.row();
-        table.add(setWord).padBottom(10);
+        table.add(setWord).padBottom(10*multiplier);
         table.row();
-        table.add(setWordTranslation).padBottom(10);
+        table.add(setWordTranslation).padBottom(10*multiplier);
         setWord.setVisible(false);
         setWordTranslation.setVisible(false);
         table.row();
-        table.add(addWordButton).padBottom(10);
+        table.add(addWordButton).padBottom(10*multiplier);
         addWordButton.setVisible(false);
         table.row();
-        table.add(saveToPreferencesButton).padBottom(10);
+        table.add(saveToPreferencesButton).padBottom(10*multiplier);
         saveToPreferencesButton.setVisible(false);
         table.row();
         table.add(goBackMenu);
